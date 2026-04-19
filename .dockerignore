@@ -1,4 +1,9 @@
 .env
+.env.production
 .postgres
 .git
 .direnv
+target
+tmp
+output
+release.tgz

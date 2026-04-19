@@ -1,8 +1,6 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-use crate::models::{
-    CreateHealthcheck, Healthcheck, LeadRequest, LeadRequestInput, UpdateHealthcheck,
-};
+use crate::models::{CreateHealthcheck, Healthcheck, UpdateHealthcheck};
 
 static MIGRATOR: sqlx::migrate::Migrator = sqlx::migrate!("./migrations");
 
@@ -94,24 +92,4 @@ pub async fn delete_healthcheck(pool: &PgPool, id: i64) -> Result<bool, sqlx::Er
     .await?;
 
     Ok(result.rows_affected() > 0)
-}
-
-pub async fn create_lead_request(
-    pool: &PgPool,
-    payload: &LeadRequestInput,
-) -> Result<LeadRequest, sqlx::Error> {
-    sqlx::query_as::<_, LeadRequest>(
-        r#"
-        insert into lead_requests (name, phone, event_date, event_type, comment)
-        values ($1, $2, $3, $4, $5)
-        returning id, name, phone, event_date, event_type, comment, created_at
-        "#,
-    )
-    .bind(payload.name.trim())
-    .bind(payload.phone.trim())
-    .bind(payload.event_date.trim())
-    .bind(payload.event_type.trim())
-    .bind(payload.comment.trim())
-    .fetch_one(pool)
-    .await
 }

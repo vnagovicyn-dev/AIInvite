@@ -7,18 +7,7 @@ use crate::{config::Config, handlers, models::AppState};
 
 pub fn build_router(pool: PgPool) -> Router {
     Router::new()
-        .route("/", get(handlers::home))
-        .route("/about", get(handlers::about))
-        .route("/services", get(handlers::services))
-        .route("/services/{slug}", get(handlers::service_details))
-        .route("/portfolio", get(handlers::portfolio))
-        .route("/portfolio/{slug}", get(handlers::portfolio_case))
-        .route("/prices", get(handlers::prices))
-        .route("/reviews", get(handlers::reviews))
-        .route("/contacts", get(handlers::contacts))
-        .route("/blog", get(handlers::blog))
-        .route("/blog/{slug}", get(handlers::blog_post))
-        .route("/request", axum::routing::post(handlers::submit_request))
+        .route("/", get(handlers::api_root))
         .route("/api", get(handlers::api_root))
         .route("/health", get(handlers::health))
         .route(

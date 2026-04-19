@@ -1,0 +1,2 @@
+python3-openai: no-manual-page [usr/bin/openai]
+python3-openai: library-package-name-for-application [usr/bin/openai]

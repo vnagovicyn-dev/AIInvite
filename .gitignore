@@ -1,5 +1,8 @@
 /.direnv
 /.docker-postgres
 /.env
+/.env.production
 /.postgres
 /target
+/deploy/Caddyfile
+/release.tgz

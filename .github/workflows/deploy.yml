@@ -1,0 +1,79 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Prepare production files
+        env:
+          APP_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
+          CADDY_SITE_ADDRESS: ${{ secrets.CADDY_SITE_ADDRESS }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        run: |
+          cat > .env.production <<EOF
+          APP_HOST=0.0.0.0
+          APP_PORT=8080
+          RUST_LOG=info
+          DATABASE_URL=${APP_DATABASE_URL}
+          REDIS_PASSWORD=${REDIS_PASSWORD}
+          REDIS_URL=redis://default:${REDIS_PASSWORD}@redis:6379/0
+          CADDY_SITE_ADDRESS=${CADDY_SITE_ADDRESS}
+          EOF
+          chmod 600 .env.production
+          chmod +x scripts/deploy/render_caddy.sh
+          ./scripts/deploy/render_caddy.sh
+
+      - name: Upload release bundle
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          DEPLOY_PORT=22
+          release_dir="/srv/aiinvite/releases/${GITHUB_SHA}"
+          tar \
+            --exclude=.git \
+            --exclude=target \
+            --exclude=.env \
+            --exclude=.env.production \
+            --exclude=.postgres \
+            --exclude=tmp \
+            --exclude=output \
+            --exclude=release.tgz \
+            -czf release.tgz .
+
+          ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$release_dir/deploy'"
+          scp -i ~/.ssh/deploy_key -P "$DEPLOY_PORT" release.tgz "$DEPLOY_USER@$DEPLOY_HOST:$release_dir/release.tgz"
+          ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "cd '$release_dir' && tar xzf release.tgz && rm -f release.tgz"
+          scp -i ~/.ssh/deploy_key -P "$DEPLOY_PORT" .env.production "$DEPLOY_USER@$DEPLOY_HOST:$release_dir/.env.production"
+          scp -i ~/.ssh/deploy_key -P "$DEPLOY_PORT" deploy/Caddyfile "$DEPLOY_USER@$DEPLOY_HOST:$release_dir/deploy/Caddyfile"
+
+      - name: Deploy on server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          DEPLOY_PORT=22
+          release_dir="/srv/aiinvite/releases/${GITHUB_SHA}"
+          ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "\
+            chmod +x '$release_dir/scripts/deploy/remote-deploy.sh' && \
+            PROJECT_NAME=aiinvite '$release_dir/scripts/deploy/remote-deploy.sh' '$release_dir' '/srv/aiinvite/current'"

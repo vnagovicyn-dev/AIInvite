@@ -46,23 +46,3 @@ pub struct DeleteResponse {
 pub struct ErrorResponse {
     pub error: String,
 }
-
-#[derive(Deserialize)]
-pub struct LeadRequestInput {
-    pub name: String,
-    pub phone: String,
-    pub event_date: String,
-    pub event_type: String,
-    pub comment: String,
-}
-
-#[derive(Serialize, FromRow)]
-pub struct LeadRequest {
-    pub id: i64,
-    pub name: String,
-    pub phone: String,
-    pub event_date: String,
-    pub event_type: String,
-    pub comment: String,
-    pub created_at: DateTime<Utc>,
-}

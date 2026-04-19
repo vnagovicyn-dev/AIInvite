@@ -1,41 +1,19 @@
-# AIInvite Rust Environment
+# Rust PostgreSQL Starter
 
-This project now includes:
+Minimal starter project for a new backend service with:
 
-- a multi-page marketing website for an event decor studio
-- an `axum` HTTP API
-- embedded `sqlx` migrations
-- a local PostgreSQL workflow in the project directory
-- a Docker Compose workflow for app + PostgreSQL + Adminer
-
-## Website routes
-
-- `GET /`
-- `GET /about`
-- `GET /services`
-- `GET /services/:slug`
-- `GET /portfolio`
-- `GET /portfolio/:slug`
-- `GET /prices`
-- `GET /reviews`
-- `GET /contacts`
-- `GET /blog`
-- `GET /blog/:slug`
-- `POST /request`
-
-The website ships with:
-
-- a premium multi-page layout for an event decoration brand
-- service landing pages for SEO
-- portfolio case pages
-- reviews, pricing, contacts, and blog pages
-- repeated lead capture forms
-- PostgreSQL persistence for submitted lead requests
+- Rust
+- `axum`
+- PostgreSQL
+- `sqlx` migrations
+- Docker and Docker Compose
+- GitHub-based remote deployment
+- local development helpers via `make`
 
 ## API routes
 
-- `GET /api`
 - `GET /`
+- `GET /api`
 - `GET /health`
 - `GET /api/healthchecks`
 - `GET /api/healthchecks/:id`
@@ -43,7 +21,7 @@ The website ships with:
 - `PUT /api/healthchecks/:id`
 - `DELETE /api/healthchecks/:id`
 
-Example payload:
+Create or update payload:
 
 ```json
 {
@@ -51,30 +29,22 @@ Example payload:
 }
 ```
 
-Update payload:
+## Quick start with local PostgreSQL
 
-```json
-{
-  "service_name": "renamed-service"
-}
+1. Create an environment file:
+
+```bash
+cp .env.example .env
 ```
 
-## Quick start with system PostgreSQL
-
-1. Initialize the local cluster:
+2. Initialize and start PostgreSQL:
 
 ```bash
 make db-init
 make db-start
 ```
 
-2. Ensure `.env` exists:
-
-```bash
-cp .env.example .env
-```
-
-3. Apply migrations and run the API:
+3. Apply migrations and run the app:
 
 ```bash
 make db-migrate
@@ -88,19 +58,26 @@ make compose-up
 curl http://127.0.0.1:8080/health
 ```
 
-Compose services:
+Services:
 
 - app: `http://127.0.0.1:8080`
 - postgres: `127.0.0.1:5433`
 - adminer: `http://127.0.0.1:8081`
 
-`make compose-up` first builds a local release binary and then packages that binary into the app container.
+## Project layout
+
+- `src/app.rs`: router and server startup
+- `src/config.rs`: environment-driven configuration
+- `src/db.rs`: PostgreSQL access and migrations
+- `src/handlers.rs`: HTTP handlers
+- `src/models.rs`: request and response models
+- `migrations/`: SQL schema changes
+- `tests/`: integration tests
 
 ## Notes
 
-- Embedded migrations are loaded from `migrations/` via `sqlx::migrate!`.
-- Lead form submissions are stored in the `lead_requests` table.
-- Runtime modules are split across `src/app.rs`, `src/config.rs`, `src/db.rs`, `src/error.rs`, `src/handlers.rs`, and `src/models.rs`.
-- Local project PostgreSQL data is stored in `.postgres/data`.
+- Embedded migrations are loaded with `sqlx::migrate!`.
+- Local PostgreSQL data is stored in `.postgres/data`.
 - Docker PostgreSQL data is stored in the named volume `aiinvite_pgdata`.
-- If `docker` requires `sudo`, start a new shell session so group membership is refreshed.
+- Server access and hardening notes are documented in `SERVER_ACCESS.md`.
+- GitHub deployment setup is documented in `DEPLOYMENT.md`.

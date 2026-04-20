@@ -4,13 +4,15 @@ use utoipa::OpenApi;
 use crate::{
     api::auth::{__path_login, __path_me, __path_register},
     api::health::{__path_health, HealthResponse},
+    api::templates::{__path_get_template, __path_list_categories, __path_list_templates},
     common::error::ErrorResponse,
     dto::auth::{AuthResponse, LoginRequest, RegisterRequest, UserResponse},
+    dto::templates::{TemplateCategoryResponse, TemplateItemResponse, TemplateListResponse},
 };
 
 #[derive(OpenApi)]
 #[openapi(
-    paths(health, register, login, me),
+    paths(health, register, login, me, list_templates, get_template, list_categories),
     components(
         schemas(
             AuthResponse,
@@ -18,16 +20,17 @@ use crate::{
             HealthResponse,
             LoginRequest,
             RegisterRequest,
+            TemplateCategoryResponse,
+            TemplateItemResponse,
+            TemplateListResponse,
             UserResponse
         )
-    ),
-    security(
-        ("bearer_auth" = [])
     ),
     modifiers(&SecurityAddon),
     tags(
         (name = "Health", description = "Service health endpoints"),
-        (name = "Auth", description = "Authentication endpoints")
+        (name = "Auth", description = "Authentication endpoints"),
+        (name = "Templates", description = "Public templates catalog")
     )
 )]
 pub struct ApiDoc;

@@ -30,6 +30,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "thiserror",
+ "time",
  "tokio",
  "tower",
  "tower-http",
@@ -324,6 +325,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7cd812cc2bc1d69d4764bd80df88b4317eaef9e773c75226407d9bc0876b211c"
 dependencies = [
  "powerfmt",
+ "serde_core",
 ]
 
 [[package]]
@@ -1675,6 +1677,7 @@ dependencies = [
  "sha2",
  "smallvec",
  "thiserror",
+ "time",
  "tokio",
  "tokio-stream",
  "tracing",
@@ -1759,6 +1762,7 @@ dependencies = [
  "sqlx-core",
  "stringprep",
  "thiserror",
+ "time",
  "tracing",
  "uuid",
  "whoami",
@@ -1797,6 +1801,7 @@ dependencies = [
  "sqlx-core",
  "stringprep",
  "thiserror",
+ "time",
  "tracing",
  "uuid",
  "whoami",
@@ -1822,6 +1827,7 @@ dependencies = [
  "serde_urlencoded",
  "sqlx-core",
  "thiserror",
+ "time",
  "tracing",
  "url",
  "uuid",

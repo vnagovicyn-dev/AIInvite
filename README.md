@@ -1,87 +1,52 @@
-# Rust PostgreSQL Starter
+# Invite Platform Backend
 
-Minimal starter project for a new backend service with:
+Minimal backend scaffold for an invitation service built with Rust, `axum`, `sqlx`, PostgreSQL and `utoipa`.
 
-- Rust
-- `axum`
-- PostgreSQL
-- `sqlx` migrations
-- Docker and Docker Compose
-- GitHub-based remote deployment
-- local development helpers via `make`
+## Required environment variables
 
-## API routes
+- `APP_NAME`
+- `APP_HOST`
+- `APP_PORT`
+- `RUST_LOG`
+- `DATABASE_URL`
 
-- `GET /`
-- `GET /api`
-- `GET /health`
-- `GET /api/healthchecks`
-- `GET /api/healthchecks/:id`
-- `POST /api/healthchecks`
-- `PUT /api/healthchecks/:id`
-- `DELETE /api/healthchecks/:id`
+## Local start
 
-Create or update payload:
-
-```json
-{
-  "service_name": "system-postgres"
-}
-```
-
-## Quick start with local PostgreSQL
-
-1. Create an environment file:
+1. Create env file:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Initialize and start PostgreSQL:
+2. Start PostgreSQL. Example with Docker:
 
 ```bash
-make db-init
-make db-start
+docker run --name invite-platform-postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_DB=invite_platform \
+  -p 5432:5432 \
+  -d postgres:16
 ```
 
-3. Apply migrations and run the app:
+3. Run the application:
 
 ```bash
-make db-migrate
-make run
+cargo run
 ```
 
-## Quick start with Docker Compose
+On startup the app will:
+- create a PostgreSQL connection pool
+- apply embedded SQL migrations from `migrations/`
+- start HTTP server on the configured host and port
 
-```bash
-make compose-up
-curl http://127.0.0.1:8080/health
-```
+## Routes
 
-Services:
+- `GET /api/health`
+- `GET /api/docs`
+- `GET /api/openapi.json`
 
-- app: `http://127.0.0.1:8080`
-- postgres: `127.0.0.1:5433`
-- adminer: `http://127.0.0.1:8081`
+## Migrations
 
-## Project layout
-
-- `src/api/`: HTTP routes and handlers
-- `src/app.rs`: server startup
-- `src/common/`: shared app primitives such as errors
-- `src/config.rs`: environment-driven configuration
-- `src/db.rs`: PostgreSQL pool and migrations
-- `src/domain.rs`: domain entities
-- `src/dto.rs`: request and response DTOs
-- `src/repos/`: PostgreSQL data access
-- `src/services/`: application services and validation
-- `migrations/`: SQL schema changes
-- `tests/`: integration tests
-
-## Notes
-
-- Embedded migrations are loaded with `sqlx::migrate!`.
-- Local PostgreSQL data is stored in `.postgres/data`.
-- Docker PostgreSQL data is stored in the named volume `aiinvite_pgdata`.
-- Server access and hardening notes are documented in `SERVER_ACCESS.md`.
-- GitHub deployment setup is documented in `DEPLOYMENT.md`.
+- Migrations are embedded with `sqlx::migrate!()`.
+- Current bootstrap migration: `migrations/0001_init_core.sql`

@@ -1,5 +1,0 @@
-CREATE TABLE IF NOT EXISTS healthchecks (
-    id BIGSERIAL PRIMARY KEY,
-    service_name TEXT NOT NULL,
-    checked_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);

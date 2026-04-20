@@ -2,7 +2,10 @@ use axum::{extract::State, Json};
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use crate::{app::state::AppState, common::error::{AppError, ErrorResponse}};
+use crate::{
+    app::state::AppState,
+    common::error::{AppError, ErrorResponse},
+};
 
 #[derive(Debug, Serialize, ToSchema)]
 pub struct HealthResponse {

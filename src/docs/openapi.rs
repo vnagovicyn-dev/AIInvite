@@ -2,7 +2,7 @@ use axum::Json;
 use utoipa::OpenApi;
 
 use crate::{
-    api::health::{health, HealthResponse},
+    api::health::{__path_health, HealthResponse},
     common::error::ErrorResponse,
 };
 

@@ -22,10 +22,8 @@ async fn health_route_returns_expected_payload() {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let body: Value = serde_json::from_slice(
-        &to_bytes(response.into_body(), usize::MAX).await.unwrap(),
-    )
-    .unwrap();
+    let body: Value =
+        serde_json::from_slice(&to_bytes(response.into_body(), usize::MAX).await.unwrap()).unwrap();
 
     assert_eq!(
         body,

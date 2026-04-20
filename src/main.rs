@@ -1,4 +1,7 @@
-use aiinvite::{app::serve, config::Config, db, init_tracing, parse_command, Command};
+use aiinvite::{
+    app::{config::Config, router::build_router, state::AppState},
+    init_tracing,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -6,16 +9,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     init_tracing();
 
     let config = Config::from_env();
-    let command = parse_command().map_err(std::io::Error::other)?;
-    let pool = db::connect_pool(&config.database_url).await?;
+    let address = config.address();
+    let state = AppState::new(config.app_name.clone());
+    let app = build_router(state);
 
-    db::run_migrations(&pool).await?;
+    let listener = tokio::net::TcpListener::bind(address.as_str()).await?;
+    tracing::info!(address = %address, "starting http server");
 
-    match command {
-        Command::Migrate => {
-            tracing::info!("migrations applied successfully");
-            Ok(())
-        }
-        Command::Serve => serve(config, pool).await,
-    }
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
+
+    Ok(())
+}
+
+async fn shutdown_signal() {
+    let _ = tokio::signal::ctrl_c().await;
+    tracing::info!("shutdown signal received");
 }

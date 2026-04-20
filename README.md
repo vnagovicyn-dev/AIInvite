@@ -66,11 +66,15 @@ Services:
 
 ## Project layout
 
-- `src/app.rs`: router and server startup
+- `src/api/`: HTTP routes and handlers
+- `src/app.rs`: server startup
+- `src/common/`: shared app primitives such as errors
 - `src/config.rs`: environment-driven configuration
-- `src/db.rs`: PostgreSQL access and migrations
-- `src/handlers.rs`: HTTP handlers
-- `src/models.rs`: request and response models
+- `src/db.rs`: PostgreSQL pool and migrations
+- `src/domain.rs`: domain entities
+- `src/dto.rs`: request and response DTOs
+- `src/repos/`: PostgreSQL data access
+- `src/services/`: application services and validation
 - `migrations/`: SQL schema changes
 - `tests/`: integration tests
 

@@ -1,26 +1,7 @@
+pub mod api;
 pub mod app;
-pub mod config;
-pub mod db;
-pub mod error;
-pub mod handlers;
-pub mod models;
-
-use std::env;
-
-pub enum Command {
-    Serve,
-    Migrate,
-}
-
-pub fn parse_command() -> Result<Command, String> {
-    match env::args().nth(1).as_deref() {
-        None | Some("serve") => Ok(Command::Serve),
-        Some("migrate") => Ok(Command::Migrate),
-        Some(other) => Err(format!(
-            "unknown command: {other}. Use `serve` or `migrate`."
-        )),
-    }
-}
+pub mod common;
+pub mod docs;
 
 pub fn init_tracing() {
     tracing_subscriber::fmt()

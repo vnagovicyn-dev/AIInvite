@@ -1,21 +1,36 @@
-use aiinvite::app::{router::build_router, state::AppState};
+use aiinvite::{
+    app::{config::Config, router::build_router, state::AppState},
+    common::auth::JwtSettings,
+    db::pool,
+};
 use axum::{
     body::{to_bytes, Body},
     http::{Request, StatusCode},
 };
 use serde_json::{json, Value};
-use sqlx::postgres::PgPoolOptions;
 use tower::util::ServiceExt;
-
-fn test_pool() -> sqlx::PgPool {
-    PgPoolOptions::new()
-        .connect_lazy("postgres://postgres:postgres@127.0.0.1:5432/invite_platform")
-        .expect("lazy test pool should be created")
-}
 
 #[tokio::test]
 async fn health_route_returns_expected_payload() {
-    let app = build_router(AppState::new("invite-platform", test_pool()));
+    dotenvy::dotenv().ok();
+    if std::env::var("JWT_SECRET").is_err() {
+        std::env::set_var("JWT_SECRET", "test-secret");
+    }
+    if std::env::var("JWT_EXPIRES_IN_MINUTES").is_err() {
+        std::env::set_var("JWT_EXPIRES_IN_MINUTES", "60");
+    }
+    let config = Config::from_env().expect("config should load");
+    let pool = pool::create_pool(&config.database_url)
+        .await
+        .expect("pool should connect");
+    pool::run_migrations(&pool)
+        .await
+        .expect("migrations should run");
+    let app = build_router(AppState::new(
+        "invite-platform",
+        pool,
+        JwtSettings::new(config.jwt_secret, config.jwt_expires_in_minutes),
+    ));
 
     let response = app
         .oneshot(

@@ -18,7 +18,11 @@ pub enum AppError {
     #[error("{0}")]
     BadRequest(String),
     #[error("{0}")]
+    Conflict(String),
+    #[error("{0}")]
     NotFound(String),
+    #[error("{0}")]
+    Unauthorized(String),
 }
 
 impl AppError {
@@ -30,23 +34,43 @@ impl AppError {
         Self::BadRequest(message.into())
     }
 
+    pub fn conflict(message: impl Into<String>) -> Self {
+        Self::Conflict(message.into())
+    }
+
     pub fn not_found(message: impl Into<String>) -> Self {
         Self::NotFound(message.into())
+    }
+
+    pub fn unauthorized(message: impl Into<String>) -> Self {
+        Self::Unauthorized(message.into())
     }
 
     fn status_code(&self) -> StatusCode {
         match self {
             Self::Internal => StatusCode::INTERNAL_SERVER_ERROR,
             Self::BadRequest(_) => StatusCode::BAD_REQUEST,
+            Self::Conflict(_) => StatusCode::CONFLICT,
             Self::NotFound(_) => StatusCode::NOT_FOUND,
+            Self::Unauthorized(_) => StatusCode::UNAUTHORIZED,
         }
     }
 
     fn public_message(&self) -> String {
         match self {
             Self::Internal => "internal server error".to_string(),
-            Self::BadRequest(message) | Self::NotFound(message) => message.clone(),
+            Self::BadRequest(message)
+            | Self::Conflict(message)
+            | Self::NotFound(message)
+            | Self::Unauthorized(message) => message.clone(),
         }
+    }
+}
+
+impl From<sqlx::Error> for AppError {
+    fn from(error: sqlx::Error) -> Self {
+        tracing::error!(error = %error, "database error");
+        Self::internal()
     }
 }
 

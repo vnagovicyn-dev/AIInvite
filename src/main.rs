@@ -1,5 +1,6 @@
 use aiinvite::{
     app::{config::Config, router::build_router, state::AppState},
+    common::auth::JwtSettings,
     db::pool,
     init_tracing,
 };
@@ -13,8 +14,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let address = config.address();
     let pool = pool::create_pool(&config.database_url).await?;
     pool::run_migrations(&pool).await?;
+    let jwt_settings = JwtSettings::new(config.jwt_secret.clone(), config.jwt_expires_in_minutes);
 
-    let state = AppState::new(config.app_name.clone(), pool);
+    let state = AppState::new(config.app_name.clone(), pool, jwt_settings);
     let app = build_router(state);
 
     let listener = tokio::net::TcpListener::bind(address.as_str()).await?;

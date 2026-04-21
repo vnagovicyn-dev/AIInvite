@@ -13,7 +13,7 @@ use crate::{
     },
     dto::page_sections::{
         CreatePageSectionRequest, PageSectionListResponse, PageSectionResponse,
-        UpdatePageSectionRequest,
+        ReorderPageSectionsRequest, UpdatePageSectionRequest,
     },
     services::page_sections_service,
 };
@@ -34,7 +34,6 @@ use crate::{
         (status = 400, description = "Invalid request", body = ErrorResponse),
         (status = 401, description = "Unauthorized", body = ErrorResponse),
         (status = 404, description = "Event not found", body = ErrorResponse),
-        (status = 409, description = "Position already exists", body = ErrorResponse),
         (status = 500, description = "Unexpected server error", body = ErrorResponse)
     )
 )]
@@ -122,7 +121,6 @@ pub async fn get_page_section(
         (status = 400, description = "Invalid request", body = ErrorResponse),
         (status = 401, description = "Unauthorized", body = ErrorResponse),
         (status = 404, description = "Page section not found", body = ErrorResponse),
-        (status = 409, description = "Position already exists", body = ErrorResponse),
         (status = 500, description = "Unexpected server error", body = ErrorResponse)
     )
 )]
@@ -170,4 +168,34 @@ pub async fn delete_page_section(
     } else {
         Err(AppError::not_found("page section not found"))
     }
+}
+
+#[utoipa::path(
+    post,
+    path = "/api/events/{event_id}/sections/reorder",
+    tag = "Page Sections",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("event_id" = Uuid, Path, description = "Event id")
+    ),
+    request_body = ReorderPageSectionsRequest,
+    responses(
+        (status = 200, description = "Page sections reordered successfully", body = PageSectionListResponse),
+        (status = 400, description = "Invalid request", body = ErrorResponse),
+        (status = 401, description = "Unauthorized", body = ErrorResponse),
+        (status = 404, description = "Event not found", body = ErrorResponse),
+        (status = 500, description = "Unexpected server error", body = ErrorResponse)
+    )
+)]
+pub async fn reorder_page_sections(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Path(event_id): Path<Uuid>,
+    Json(payload): Json<ReorderPageSectionsRequest>,
+) -> Result<Json<PageSectionListResponse>, AppError> {
+    let sections =
+        page_sections_service::reorder(&state.pool, current_user.id, event_id, payload).await?;
+    Ok(Json(sections))
 }

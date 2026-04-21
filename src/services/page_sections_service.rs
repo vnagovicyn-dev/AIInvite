@@ -8,11 +8,24 @@ use crate::{
         events::PatchValue,
         page_sections::{
             CreatePageSectionRequest, PageSectionListResponse, PageSectionResponse,
-            UpdatePageSectionRequest,
+            ReorderPageSectionsRequest, UpdatePageSectionRequest,
         },
     },
     repos::{events_repo, page_sections_repo},
 };
+
+const ALLOWED_SECTION_TYPES: [&str; 10] = [
+    "hero",
+    "story",
+    "program",
+    "location",
+    "dress_code",
+    "faq",
+    "gift",
+    "gallery",
+    "video",
+    "rsvp",
+];
 
 pub async fn create(
     pool: &PgPool,
@@ -21,7 +34,8 @@ pub async fn create(
     payload: CreatePageSectionRequest,
 ) -> Result<PageSectionResponse, AppError> {
     ensure_event_owned(pool, owner_id, event_id).await?;
-    let new_section = normalize_create_request(event_id, payload)?;
+    let next_position = page_sections_repo::next_position_for_event(pool, event_id).await?;
+    let new_section = normalize_create_request(event_id, next_position, payload)?;
 
     page_sections_repo::create(pool, &new_section)
         .await
@@ -69,6 +83,39 @@ pub async fn update(
         .map_err(map_write_error)
 }
 
+pub async fn reorder(
+    pool: &PgPool,
+    owner_id: Uuid,
+    event_id: Uuid,
+    payload: ReorderPageSectionsRequest,
+) -> Result<PageSectionListResponse, AppError> {
+    ensure_event_owned(pool, owner_id, event_id).await?;
+
+    if payload.section_ids.is_empty() {
+        return Err(AppError::bad_request("section_ids must not be empty"));
+    }
+
+    let existing_ids = page_sections_repo::list_ids_for_event(pool, event_id).await?;
+    if existing_ids.len() != payload.section_ids.len() {
+        return Err(AppError::bad_request(
+            "section_ids must include all event sections exactly once",
+        ));
+    }
+
+    let mut expected = existing_ids;
+    let mut provided = payload.section_ids.clone();
+    expected.sort_unstable();
+    provided.sort_unstable();
+    if expected != provided {
+        return Err(AppError::bad_request(
+            "section_ids must include all event sections exactly once",
+        ));
+    }
+
+    page_sections_repo::reorder_for_owner(pool, owner_id, event_id, &payload.section_ids).await?;
+    list(pool, owner_id, event_id).await
+}
+
 pub async fn delete(
     pool: &PgPool,
     owner_id: Uuid,
@@ -82,11 +129,12 @@ pub async fn delete(
 
 fn normalize_create_request(
     event_id: Uuid,
+    position: i32,
     payload: CreatePageSectionRequest,
 ) -> Result<page_sections_repo::NewPageSection, AppError> {
     let section_type =
         normalize_required_string(&payload.section_type, "section_type is required")?;
-    let position = normalize_position(payload.position)?;
+    validate_section_type(&section_type)?;
 
     Ok(page_sections_repo::NewPageSection {
         event_id,
@@ -94,18 +142,13 @@ fn normalize_create_request(
         position,
         is_enabled: payload.is_enabled.unwrap_or(true),
         title: normalize_optional_string(payload.title),
-        content: payload.content.unwrap_or_else(empty_content),
+        content: payload.content,
     })
 }
 
 fn normalize_update_request(
     payload: UpdatePageSectionRequest,
 ) -> Result<page_sections_repo::UpdatePageSectionChanges, AppError> {
-    let section_type = payload
-        .section_type
-        .map(|value| normalize_required_string(&value, "section_type is invalid"))
-        .transpose()?;
-    let position = payload.position.map(normalize_position).transpose()?;
     let title = match payload.title {
         PatchValue::Missing => None,
         PatchValue::Null => Some(None),
@@ -117,18 +160,11 @@ fn normalize_update_request(
         PatchValue::Value(value) => Some(value),
     };
 
-    if section_type.is_none()
-        && position.is_none()
-        && payload.is_enabled.is_none()
-        && title.is_none()
-        && content.is_none()
-    {
+    if payload.is_enabled.is_none() && title.is_none() && content.is_none() {
         return Err(AppError::bad_request("no fields to update"));
     }
 
     Ok(page_sections_repo::UpdatePageSectionChanges {
-        section_type,
-        position,
         is_enabled: payload.is_enabled,
         title,
         content,
@@ -164,11 +200,11 @@ fn normalize_optional_string(value: Option<String>) -> Option<String> {
     })
 }
 
-fn normalize_position(value: i32) -> Result<i32, AppError> {
-    if value <= 0 {
-        Err(AppError::bad_request("position must be greater than 0"))
+fn validate_section_type(value: &str) -> Result<(), AppError> {
+    if ALLOWED_SECTION_TYPES.contains(&value) {
+        Ok(())
     } else {
-        Ok(value)
+        Err(AppError::bad_request("section_type is invalid"))
     }
 }
 

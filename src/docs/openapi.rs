@@ -10,7 +10,7 @@ use crate::{
     api::health::{__path_health, HealthResponse},
     api::page_sections::{
         __path_create_page_section, __path_delete_page_section, __path_get_page_section,
-        __path_list_page_sections, __path_update_page_section,
+        __path_list_page_sections, __path_reorder_page_sections, __path_update_page_section,
     },
     api::public::__path_get_public_event_page,
     api::templates::{__path_get_template, __path_list_categories, __path_list_templates},
@@ -19,7 +19,7 @@ use crate::{
     dto::events::{CreateEventRequest, EventListResponse, EventResponse, UpdateEventRequest},
     dto::page_sections::{
         CreatePageSectionRequest, PageSectionListResponse, PageSectionResponse,
-        UpdatePageSectionRequest,
+        ReorderPageSectionsRequest, UpdatePageSectionRequest,
     },
     dto::public::{PublicEventPageResponse, PublicPageSectionResponse},
     dto::templates::{TemplateCategoryResponse, TemplateItemResponse, TemplateListResponse},
@@ -47,6 +47,7 @@ use crate::{
         get_page_section,
         update_page_section,
         delete_page_section,
+        reorder_page_sections,
         get_public_event_page
     ),
     components(
@@ -61,6 +62,7 @@ use crate::{
             LoginRequest,
             PageSectionListResponse,
             PageSectionResponse,
+            ReorderPageSectionsRequest,
             PublicEventPageResponse,
             PublicPageSectionResponse,
             RegisterRequest,

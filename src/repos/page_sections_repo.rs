@@ -1,5 +1,5 @@
 use serde_json::Value;
-use sqlx::PgPool;
+use sqlx::{Acquire, PgPool};
 use uuid::Uuid;
 
 use crate::domain::page_sections::PageSection;
@@ -14,8 +14,6 @@ pub struct NewPageSection {
 }
 
 pub struct UpdatePageSectionChanges {
-    pub section_type: Option<String>,
-    pub position: Option<i32>,
     pub is_enabled: Option<bool>,
     pub title: Option<Option<String>>,
     pub content: Option<Value>,
@@ -83,6 +81,37 @@ pub async fn list_by_event(pool: &PgPool, event_id: Uuid) -> Result<Vec<PageSect
     .await
 }
 
+pub async fn list_ids_for_event(pool: &PgPool, event_id: Uuid) -> Result<Vec<Uuid>, sqlx::Error> {
+    let rows = sqlx::query_scalar::<_, Uuid>(
+        r#"
+        SELECT id
+        FROM page_sections
+        WHERE event_id = $1
+        ORDER BY position ASC, created_at ASC
+        "#,
+    )
+    .bind(event_id)
+    .fetch_all(pool)
+    .await?;
+
+    Ok(rows)
+}
+
+pub async fn next_position_for_event(pool: &PgPool, event_id: Uuid) -> Result<i32, sqlx::Error> {
+    let next_position = sqlx::query_scalar::<_, i32>(
+        r#"
+        SELECT COALESCE(MAX(position), 0) + 1
+        FROM page_sections
+        WHERE event_id = $1
+        "#,
+    )
+    .bind(event_id)
+    .fetch_one(pool)
+    .await?;
+
+    Ok(next_position)
+}
+
 pub async fn find_by_id_for_owner(
     pool: &PgPool,
     owner_id: Uuid,
@@ -124,17 +153,15 @@ pub async fn update_for_owner(
         r#"
         UPDATE page_sections ps
         SET
-            section_type = CASE WHEN $1 THEN $2 ELSE ps.section_type END,
-            position = CASE WHEN $3 THEN $4 ELSE ps.position END,
-            is_enabled = CASE WHEN $5 THEN $6 ELSE ps.is_enabled END,
-            title = CASE WHEN $7 THEN $8 ELSE ps.title END,
-            content = CASE WHEN $9 THEN $10 ELSE ps.content END,
+            is_enabled = CASE WHEN $1 THEN $2 ELSE ps.is_enabled END,
+            title = CASE WHEN $3 THEN $4 ELSE ps.title END,
+            content = CASE WHEN $5 THEN $6 ELSE ps.content END,
             updated_at = now()
         FROM events e
-        WHERE ps.id = $11
-          AND ps.event_id = $12
+        WHERE ps.id = $7
+          AND ps.event_id = $8
           AND e.id = ps.event_id
-          AND e.owner_id = $13
+          AND e.owner_id = $9
         RETURNING
             ps.id,
             ps.event_id,
@@ -147,10 +174,6 @@ pub async fn update_for_owner(
             ps.updated_at
         "#,
     )
-    .bind(changes.section_type.is_some())
-    .bind(&changes.section_type)
-    .bind(changes.position.is_some())
-    .bind(changes.position)
     .bind(changes.is_enabled.is_some())
     .bind(changes.is_enabled)
     .bind(changes.title.is_some())
@@ -170,7 +193,10 @@ pub async fn delete_for_owner(
     event_id: Uuid,
     id: Uuid,
 ) -> Result<bool, sqlx::Error> {
-    let result = sqlx::query(
+    let mut transaction = pool.begin().await?;
+    let conn = transaction.acquire().await?;
+
+    let deleted_position = sqlx::query_scalar::<_, i32>(
         r#"
         DELETE FROM page_sections ps
         USING events e
@@ -178,13 +204,94 @@ pub async fn delete_for_owner(
           AND ps.event_id = $2
           AND e.id = ps.event_id
           AND e.owner_id = $3
+        RETURNING ps.position
         "#,
     )
     .bind(id)
     .bind(event_id)
     .bind(owner_id)
-    .execute(pool)
+    .fetch_optional(&mut *conn)
     .await?;
 
-    Ok(result.rows_affected() > 0)
+    let Some(position) = deleted_position else {
+        transaction.commit().await?;
+        return Ok(false);
+    };
+
+    sqlx::query(
+        r#"
+        UPDATE page_sections
+        SET
+            position = position - 1,
+            updated_at = now()
+        WHERE event_id = $1
+          AND position > $2
+        "#,
+    )
+    .bind(event_id)
+    .bind(position)
+    .execute(&mut *conn)
+    .await?;
+
+    transaction.commit().await?;
+    Ok(true)
+}
+
+pub async fn reorder_for_owner(
+    pool: &PgPool,
+    owner_id: Uuid,
+    event_id: Uuid,
+    section_ids: &[Uuid],
+) -> Result<(), sqlx::Error> {
+    let mut transaction = pool.begin().await?;
+    let conn = transaction.acquire().await?;
+
+    for (index, section_id) in section_ids.iter().enumerate() {
+        let rows_affected = sqlx::query(
+            r#"
+            UPDATE page_sections ps
+            SET
+                position = $1,
+                updated_at = now()
+            FROM events e
+            WHERE ps.id = $2
+              AND ps.event_id = $3
+              AND e.id = ps.event_id
+              AND e.owner_id = $4
+            "#,
+        )
+        .bind(-((index as i32) + 1))
+        .bind(section_id)
+        .bind(event_id)
+        .bind(owner_id)
+        .execute(&mut *conn)
+        .await?
+        .rows_affected();
+
+        if rows_affected != 1 {
+            transaction.rollback().await?;
+            return Err(sqlx::Error::RowNotFound);
+        }
+    }
+
+    for (index, section_id) in section_ids.iter().enumerate() {
+        sqlx::query(
+            r#"
+            UPDATE page_sections
+            SET
+                position = $1,
+                updated_at = now()
+            WHERE id = $2
+              AND event_id = $3
+            "#,
+        )
+        .bind((index as i32) + 1)
+        .bind(section_id)
+        .bind(event_id)
+        .execute(&mut *conn)
+        .await?;
+    }
+
+    transaction.commit().await?;
+    Ok(())
 }

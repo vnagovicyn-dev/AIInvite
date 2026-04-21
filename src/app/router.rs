@@ -37,6 +37,10 @@ pub fn build_router(state: AppState) -> Router {
             post(page_sections::create_page_section).get(page_sections::list_page_sections),
         )
         .route(
+            "/api/events/:event_id/sections/reorder",
+            post(page_sections::reorder_page_sections),
+        )
+        .route(
             "/api/events/:event_id/sections/:id",
             get(page_sections::get_page_section)
                 .patch(page_sections::update_page_section)

@@ -153,7 +153,6 @@ async fn create_and_get_page_section_work() {
         event_id,
         json!({
             "section_type": "hero",
-            "position": 1,
             "title": "Welcome",
             "content": {
                 "headline": "Join us"
@@ -198,21 +197,21 @@ async fn list_page_sections_returns_sorted_items() {
         &token,
         event_id,
         json!({
-            "section_type": "details",
-            "position": 2
+            "section_type": "program",
+            "content": {"items": []}
         }),
     )
     .await;
 
     tokio::time::sleep(Duration::from_millis(5)).await;
 
-    let first = create_section(
+    let _first = create_section(
         &app,
         &token,
         event_id,
         json!({
             "section_type": "hero",
-            "position": 1
+            "content": {"headline": "Hello"}
         }),
     )
     .await;
@@ -234,7 +233,6 @@ async fn list_page_sections_returns_sorted_items() {
         serde_json::from_slice(&to_bytes(response.into_body(), usize::MAX).await.unwrap()).unwrap();
 
     assert_eq!(body["items"].as_array().unwrap().len(), 2);
-    assert_eq!(body["items"][0]["id"], first["id"]);
     assert_eq!(body["items"][0]["position"], 1);
     assert_eq!(body["items"][1]["position"], 2);
 }
@@ -251,7 +249,6 @@ async fn update_page_section_allows_null_title_and_updates_content() {
         event_id,
         json!({
             "section_type": "hero",
-            "position": 1,
             "title": "Initial title",
             "content": {"headline": "Initial"}
         }),
@@ -271,7 +268,6 @@ async fn update_page_section_allows_null_title_and_updates_content() {
                 .header("content-type", "application/json")
                 .body(Body::from(
                     json!({
-                        "position": 3,
                         "is_enabled": false,
                         "title": null,
                         "content": {"headline": "Updated"}
@@ -287,7 +283,7 @@ async fn update_page_section_allows_null_title_and_updates_content() {
     let body: Value =
         serde_json::from_slice(&to_bytes(response.into_body(), usize::MAX).await.unwrap()).unwrap();
 
-    assert_eq!(body["position"], 3);
+    assert_eq!(body["position"], 1);
     assert_eq!(body["is_enabled"], false);
     assert!(body["title"].is_null());
     assert_eq!(body["content"]["headline"], "Updated");
@@ -305,7 +301,18 @@ async fn delete_page_section_removes_item() {
         event_id,
         json!({
             "section_type": "gallery",
-            "position": 1
+            "content": {"images": []}
+        }),
+    )
+    .await;
+
+    let second = create_section(
+        &app,
+        &token,
+        event_id,
+        json!({
+            "section_type": "faq",
+            "content": {"items": []}
         }),
     )
     .await;
@@ -344,6 +351,102 @@ async fn delete_page_section_removes_item() {
         .unwrap();
 
     assert_eq!(detail_response.status(), StatusCode::NOT_FOUND);
+
+    let list_response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri(format!("/api/events/{event_id}/sections"))
+                .header("authorization", format!("Bearer {token}"))
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(list_response.status(), StatusCode::OK);
+    let list_body: Value = serde_json::from_slice(
+        &to_bytes(list_response.into_body(), usize::MAX)
+            .await
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(list_body["items"].as_array().unwrap().len(), 1);
+    assert_eq!(list_body["items"][0]["id"], second["id"]);
+    assert_eq!(list_body["items"][0]["position"], 1);
+}
+
+#[tokio::test]
+async fn reorder_sections_normalizes_positions() {
+    let app = test_app().await;
+    let token = register_and_login(&app).await;
+    let event = create_event(&app, &token, "Sections Reorder Event").await;
+    let event_id = event["id"].as_str().unwrap();
+
+    let first = create_section(
+        &app,
+        &token,
+        event_id,
+        json!({
+            "section_type": "hero",
+            "content": {"headline": "First"}
+        }),
+    )
+    .await;
+    let second = create_section(
+        &app,
+        &token,
+        event_id,
+        json!({
+            "section_type": "program",
+            "content": {"items": []}
+        }),
+    )
+    .await;
+    let third = create_section(
+        &app,
+        &token,
+        event_id,
+        json!({
+            "section_type": "faq",
+            "content": {"items": []}
+        }),
+    )
+    .await;
+
+    let response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri(format!("/api/events/{event_id}/sections/reorder"))
+                .header("authorization", format!("Bearer {token}"))
+                .header("content-type", "application/json")
+                .body(Body::from(
+                    json!({
+                        "section_ids": [
+                            third["id"],
+                            first["id"],
+                            second["id"]
+                        ]
+                    })
+                    .to_string(),
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    let body: Value =
+        serde_json::from_slice(&to_bytes(response.into_body(), usize::MAX).await.unwrap()).unwrap();
+
+    assert_eq!(body["items"][0]["id"], third["id"]);
+    assert_eq!(body["items"][0]["position"], 1);
+    assert_eq!(body["items"][1]["id"], first["id"]);
+    assert_eq!(body["items"][1]["position"], 2);
+    assert_eq!(body["items"][2]["id"], second["id"]);
+    assert_eq!(body["items"][2]["position"], 3);
 }
 
 #[tokio::test]
@@ -359,7 +462,7 @@ async fn other_user_cannot_access_foreign_page_section() {
         event_id,
         json!({
             "section_type": "hero",
-            "position": 1
+            "content": {"headline": "Private"}
         }),
     )
     .await;
@@ -393,7 +496,7 @@ async fn other_user_cannot_access_foreign_page_section() {
                 .header("content-type", "application/json")
                 .body(Body::from(
                     json!({
-                        "position": 2
+                        "is_enabled": false
                     })
                     .to_string(),
                 ))
@@ -419,4 +522,24 @@ async fn other_user_cannot_access_foreign_page_section() {
         .await
         .unwrap();
     assert_eq!(delete_response.status(), StatusCode::NOT_FOUND);
+
+    let reorder_response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri(format!("/api/events/{event_id}/sections/reorder"))
+                .header("authorization", format!("Bearer {other_token}"))
+                .header("content-type", "application/json")
+                .body(Body::from(
+                    json!({
+                        "section_ids": [created["id"]]
+                    })
+                    .to_string(),
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(reorder_response.status(), StatusCode::NOT_FOUND);
 }

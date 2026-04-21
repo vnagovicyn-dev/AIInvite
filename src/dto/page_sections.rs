@@ -9,16 +9,13 @@ use crate::{domain::page_sections::PageSection, dto::events::PatchValue};
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct CreatePageSectionRequest {
     pub section_type: String,
-    pub position: i32,
     pub is_enabled: Option<bool>,
     pub title: Option<String>,
-    pub content: Option<Value>,
+    pub content: Value,
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct UpdatePageSectionRequest {
-    pub section_type: Option<String>,
-    pub position: Option<i32>,
     pub is_enabled: Option<bool>,
     #[serde(default)]
     #[schema(value_type = Option<String>)]
@@ -66,4 +63,9 @@ impl From<PageSection> for PageSectionResponse {
 #[derive(Debug, Serialize, ToSchema)]
 pub struct PageSectionListResponse {
     pub items: Vec<PageSectionResponse>,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct ReorderPageSectionsRequest {
+    pub section_ids: Vec<Uuid>,
 }

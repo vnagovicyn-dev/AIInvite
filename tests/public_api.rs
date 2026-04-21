@@ -234,10 +234,10 @@ async fn public_endpoint_returns_published_event_with_enabled_sections() {
         &token,
         event_id,
         json!({
-            "section_type": "hero",
-            "position": 2,
-            "title": "Welcome",
-            "content": {"headline": "Join us"}
+            "section_type": "program",
+            "is_enabled": false,
+            "title": "Private draft block",
+            "content": {"items": []}
         }),
     )
     .await;
@@ -247,11 +247,9 @@ async fn public_endpoint_returns_published_event_with_enabled_sections() {
         &token,
         event_id,
         json!({
-            "section_type": "details",
-            "position": 1,
-            "is_enabled": false,
-            "title": "Private draft block",
-            "content": {"note": "hidden"}
+            "section_type": "hero",
+            "title": "Welcome",
+            "content": {"headline": "Join us"}
         }),
     )
     .await;

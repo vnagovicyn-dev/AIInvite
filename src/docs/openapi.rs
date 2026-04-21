@@ -16,7 +16,11 @@ use crate::{
         __path_create_page_section, __path_delete_page_section, __path_get_page_section,
         __path_list_page_sections, __path_reorder_page_sections, __path_update_page_section,
     },
-    api::public::__path_get_public_event_page,
+    api::public::{__path_get_public_event_page, __path_submit_public_rsvp},
+    api::rsvp::{
+        __path_get_rsvp_form, __path_get_rsvp_response, __path_list_rsvp_responses,
+        __path_upsert_rsvp_form,
+    },
     api::templates::{__path_get_template, __path_list_categories, __path_list_templates},
     common::error::ErrorResponse,
     dto::auth::{AuthResponse, LoginRequest, RegisterRequest, UserResponse},
@@ -30,6 +34,11 @@ use crate::{
         ReorderPageSectionsRequest, UpdatePageSectionRequest,
     },
     dto::public::{PublicEventPageResponse, PublicPageSectionResponse},
+    dto::rsvp::{
+        PublicSubmitRsvpRequest, PublicSubmitRsvpResponse, RsvpFormResponse, RsvpQuestionInput,
+        RsvpQuestionResponse, RsvpResponseItem, RsvpResponsesAggregates, RsvpResponsesListResponse,
+        UpsertRsvpFormRequest,
+    },
     dto::templates::{TemplateCategoryResponse, TemplateItemResponse, TemplateListResponse},
 };
 
@@ -62,7 +71,12 @@ use crate::{
         update_page_section,
         delete_page_section,
         reorder_page_sections,
-        get_public_event_page
+        get_rsvp_form,
+        upsert_rsvp_form,
+        list_rsvp_responses,
+        get_rsvp_response,
+        get_public_event_page,
+        submit_public_rsvp
     ),
     components(
         schemas(
@@ -83,10 +97,19 @@ use crate::{
             ReorderPageSectionsRequest,
             PublicEventPageResponse,
             PublicPageSectionResponse,
+            PublicSubmitRsvpRequest,
+            PublicSubmitRsvpResponse,
             RegisterRequest,
+            RsvpFormResponse,
+            RsvpQuestionInput,
+            RsvpQuestionResponse,
+            RsvpResponseItem,
+            RsvpResponsesAggregates,
+            RsvpResponsesListResponse,
             TemplateCategoryResponse,
             TemplateItemResponse,
             TemplateListResponse,
+            UpsertRsvpFormRequest,
             UpdateEventRequest,
             UpdateGuestRequest,
             UpdatePageSectionRequest,
@@ -101,6 +124,7 @@ use crate::{
         (name = "Events", description = "Authenticated event management"),
         (name = "Guests", description = "Authenticated guest management"),
         (name = "Page Sections", description = "Authenticated page section management"),
+        (name = "RSVP", description = "RSVP form and response management"),
         (name = "Public", description = "Public invitation page endpoints")
     )
 )]

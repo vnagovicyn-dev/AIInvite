@@ -2,5 +2,6 @@ pub mod events_repo;
 pub mod guests_repo;
 pub mod page_sections_repo;
 pub mod pages_repo;
+pub mod rsvp_repo;
 pub mod templates_repo;
 pub mod users_repo;

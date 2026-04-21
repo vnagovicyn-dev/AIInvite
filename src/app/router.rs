@@ -7,7 +7,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::{
-    api::{auth, events, guests, health, page_sections, public, templates},
+    api::{auth, events, guests, health, page_sections, public, rsvp, templates},
     app::state::AppState,
     docs::openapi::ApiDoc,
 };
@@ -32,6 +32,18 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route("/api/events/:id/publish", post(events::publish_event))
         .route("/api/events/:id/unpublish", post(events::unpublish_event))
+        .route(
+            "/api/events/:id/rsvp-form",
+            get(rsvp::get_rsvp_form).put(rsvp::upsert_rsvp_form),
+        )
+        .route(
+            "/api/events/:id/rsvp-responses",
+            get(rsvp::list_rsvp_responses),
+        )
+        .route(
+            "/api/events/:id/rsvp-responses/:response_id",
+            get(rsvp::get_rsvp_response),
+        )
         .route(
             "/api/events/:event_id/sections",
             post(page_sections::create_page_section).get(page_sections::list_page_sections),
@@ -61,6 +73,7 @@ pub fn build_router(state: AppState) -> Router {
         .route("/api/templates/categories", get(templates::list_categories))
         .route("/api/templates/:id", get(templates::get_template))
         .route("/api/public/:slug", get(public::get_public_event_page))
+        .route("/api/public/:slug/rsvp", post(public::submit_public_rsvp))
         .route("/api/health", get(health::health))
         .layer(TraceLayer::new_for_http())
         .with_state(state)

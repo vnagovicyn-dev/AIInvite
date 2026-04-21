@@ -3,4 +3,5 @@ pub mod events;
 pub mod guests;
 pub mod page_sections;
 pub mod public;
+pub mod rsvp;
 pub mod templates;

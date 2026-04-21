@@ -170,6 +170,37 @@ pub async fn find_by_id_for_owner(
     .await
 }
 
+pub async fn find_by_id_and_event(
+    pool: &PgPool,
+    event_id: Uuid,
+    guest_id: Uuid,
+) -> Result<Option<Guest>, sqlx::Error> {
+    sqlx::query_as::<_, Guest>(
+        r#"
+        SELECT
+            id,
+            event_id,
+            full_name,
+            phone,
+            email,
+            group_name,
+            tags,
+            plus_one_allowed,
+            is_child,
+            vip,
+            notes,
+            created_at
+        FROM guests
+        WHERE id = $1
+          AND event_id = $2
+        "#,
+    )
+    .bind(guest_id)
+    .bind(event_id)
+    .fetch_optional(pool)
+    .await
+}
+
 pub async fn update_for_owner(
     pool: &PgPool,
     owner_id: Uuid,

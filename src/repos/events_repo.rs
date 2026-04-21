@@ -246,3 +246,39 @@ pub async fn delete_by_owner(pool: &PgPool, owner_id: Uuid, id: Uuid) -> Result<
 
     Ok(result.rows_affected() > 0)
 }
+
+pub async fn set_status_by_owner(
+    pool: &PgPool,
+    owner_id: Uuid,
+    id: Uuid,
+    status: &str,
+) -> Result<Option<Event>, sqlx::Error> {
+    sqlx::query_as::<_, Event>(
+        r#"
+        UPDATE events
+        SET
+            status = $1,
+            updated_at = now()
+        WHERE id = $2 AND owner_id = $3
+        RETURNING
+            id,
+            owner_id,
+            template_id,
+            title,
+            slug,
+            event_type,
+            status,
+            event_date,
+            timezone,
+            venue_name,
+            venue_address,
+            created_at,
+            updated_at
+        "#,
+    )
+    .bind(status)
+    .bind(id)
+    .bind(owner_id)
+    .fetch_optional(pool)
+    .await
+}

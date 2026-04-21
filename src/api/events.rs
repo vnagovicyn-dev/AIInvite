@@ -156,3 +156,61 @@ pub async fn delete_event(
         Err(AppError::not_found("event not found"))
     }
 }
+
+#[utoipa::path(
+    post,
+    path = "/api/events/{id}/publish",
+    tag = "Events",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = Uuid, Path, description = "Event id")
+    ),
+    responses(
+        (status = 200, description = "Event published successfully", body = EventResponse),
+        (status = 401, description = "Unauthorized", body = ErrorResponse),
+        (status = 404, description = "Event not found", body = ErrorResponse),
+        (status = 500, description = "Unexpected server error", body = ErrorResponse)
+    )
+)]
+pub async fn publish_event(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Path(id): Path<Uuid>,
+) -> Result<Json<EventResponse>, AppError> {
+    let event = event_service::publish(&state.pool, current_user.id, id)
+        .await?
+        .ok_or_else(|| AppError::not_found("event not found"))?;
+
+    Ok(Json(event))
+}
+
+#[utoipa::path(
+    post,
+    path = "/api/events/{id}/unpublish",
+    tag = "Events",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = Uuid, Path, description = "Event id")
+    ),
+    responses(
+        (status = 200, description = "Event unpublished successfully", body = EventResponse),
+        (status = 401, description = "Unauthorized", body = ErrorResponse),
+        (status = 404, description = "Event not found", body = ErrorResponse),
+        (status = 500, description = "Unexpected server error", body = ErrorResponse)
+    )
+)]
+pub async fn unpublish_event(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Path(id): Path<Uuid>,
+) -> Result<Json<EventResponse>, AppError> {
+    let event = event_service::unpublish(&state.pool, current_user.id, id)
+        .await?
+        .ok_or_else(|| AppError::not_found("event not found"))?;
+
+    Ok(Json(event))
+}

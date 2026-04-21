@@ -117,6 +117,22 @@ pub async fn delete(pool: &PgPool, owner_id: Uuid, id: Uuid) -> Result<bool, App
         .map_err(AppError::from)
 }
 
+pub async fn publish(
+    pool: &PgPool,
+    owner_id: Uuid,
+    id: Uuid,
+) -> Result<Option<EventResponse>, AppError> {
+    set_status(pool, owner_id, id, "published").await
+}
+
+pub async fn unpublish(
+    pool: &PgPool,
+    owner_id: Uuid,
+    id: Uuid,
+) -> Result<Option<EventResponse>, AppError> {
+    set_status(pool, owner_id, id, DEFAULT_EVENT_STATUS).await
+}
+
 fn normalize_create_request(
     payload: CreateEventRequest,
 ) -> Result<NormalizedCreateEvent, AppError> {
@@ -286,6 +302,19 @@ fn is_unique_violation(error: &sqlx::Error) -> bool {
         error,
         sqlx::Error::Database(database_error) if database_error.code().as_deref() == Some("23505")
     )
+}
+
+async fn set_status(
+    pool: &PgPool,
+    owner_id: Uuid,
+    id: Uuid,
+    status: &str,
+) -> Result<Option<EventResponse>, AppError> {
+    let event = events_repo::set_status_by_owner(pool, owner_id, id, status)
+        .await
+        .map_err(AppError::from)?;
+
+    Ok(event.map(EventResponse::from))
 }
 
 struct NormalizedCreateEvent {

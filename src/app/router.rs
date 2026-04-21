@@ -7,7 +7,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::{
-    api::{auth, events, health, page_sections, public, templates},
+    api::{auth, events, guests, health, page_sections, public, templates},
     app::state::AppState,
     docs::openapi::ApiDoc,
 };
@@ -45,6 +45,17 @@ pub fn build_router(state: AppState) -> Router {
             get(page_sections::get_page_section)
                 .patch(page_sections::update_page_section)
                 .delete(page_sections::delete_page_section),
+        )
+        .route(
+            "/api/events/:id/guests",
+            get(guests::list_guests).post(guests::create_guest),
+        )
+        .route("/api/events/:id/guests/import", post(guests::import_guests))
+        .route(
+            "/api/events/:id/guests/:guest_id",
+            get(guests::get_guest)
+                .patch(guests::update_guest)
+                .delete(guests::delete_guest),
         )
         .route("/api/templates", get(templates::list_templates))
         .route("/api/templates/categories", get(templates::list_categories))

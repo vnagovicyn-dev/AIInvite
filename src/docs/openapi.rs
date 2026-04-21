@@ -7,6 +7,10 @@ use crate::{
         __path_create_event, __path_delete_event, __path_get_event, __path_list_events,
         __path_publish_event, __path_unpublish_event, __path_update_event,
     },
+    api::guests::{
+        __path_create_guest, __path_delete_guest, __path_get_guest, __path_import_guests,
+        __path_list_guests, __path_update_guest,
+    },
     api::health::{__path_health, HealthResponse},
     api::page_sections::{
         __path_create_page_section, __path_delete_page_section, __path_get_page_section,
@@ -17,6 +21,10 @@ use crate::{
     common::error::ErrorResponse,
     dto::auth::{AuthResponse, LoginRequest, RegisterRequest, UserResponse},
     dto::events::{CreateEventRequest, EventListResponse, EventResponse, UpdateEventRequest},
+    dto::guests::{
+        CreateGuestRequest, GuestImportResponse, GuestListResponse, GuestResponse,
+        UpdateGuestRequest,
+    },
     dto::page_sections::{
         CreatePageSectionRequest, PageSectionListResponse, PageSectionResponse,
         ReorderPageSectionsRequest, UpdatePageSectionRequest,
@@ -42,6 +50,12 @@ use crate::{
         delete_event,
         publish_event,
         unpublish_event,
+        list_guests,
+        create_guest,
+        get_guest,
+        update_guest,
+        delete_guest,
+        import_guests,
         create_page_section,
         list_page_sections,
         get_page_section,
@@ -54,10 +68,14 @@ use crate::{
         schemas(
             AuthResponse,
             CreateEventRequest,
+            CreateGuestRequest,
             CreatePageSectionRequest,
             ErrorResponse,
             EventListResponse,
             EventResponse,
+            GuestImportResponse,
+            GuestListResponse,
+            GuestResponse,
             HealthResponse,
             LoginRequest,
             PageSectionListResponse,
@@ -70,6 +88,7 @@ use crate::{
             TemplateItemResponse,
             TemplateListResponse,
             UpdateEventRequest,
+            UpdateGuestRequest,
             UpdatePageSectionRequest,
             UserResponse
         )
@@ -80,6 +99,7 @@ use crate::{
         (name = "Auth", description = "Authentication endpoints"),
         (name = "Templates", description = "Public templates catalog"),
         (name = "Events", description = "Authenticated event management"),
+        (name = "Guests", description = "Authenticated guest management"),
         (name = "Page Sections", description = "Authenticated page section management"),
         (name = "Public", description = "Public invitation page endpoints")
     )

@@ -70,6 +70,7 @@ impl Default for GuestListQuery {
 pub struct GuestResponse {
     pub id: Uuid,
     pub event_id: Uuid,
+    pub invite_token: String,
     pub full_name: String,
     pub phone: Option<String>,
     pub email: Option<String>,
@@ -87,6 +88,7 @@ impl From<Guest> for GuestResponse {
         Self {
             id: guest.id,
             event_id: guest.event_id,
+            invite_token: guest.invite_token,
             full_name: guest.full_name,
             phone: guest.phone,
             email: guest.email,

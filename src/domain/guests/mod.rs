@@ -6,6 +6,7 @@ use uuid::Uuid;
 pub struct Guest {
     pub id: Uuid,
     pub event_id: Uuid,
+    pub invite_token: String,
     pub full_name: String,
     pub phone: Option<String>,
     pub email: Option<String>,

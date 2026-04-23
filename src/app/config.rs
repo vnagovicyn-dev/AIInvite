@@ -12,6 +12,7 @@ pub enum ConfigError {
 pub struct Config {
     pub app_name: String,
     pub database_url: String,
+    pub frontend_origins: Vec<String>,
     pub host: String,
     pub jwt_expires_in_minutes: u64,
     pub jwt_secret: String,
@@ -26,6 +27,13 @@ impl Config {
             .ok()
             .and_then(|value| value.parse::<u16>().ok())
             .unwrap_or(8080);
+        let frontend_origins = env::var("FRONTEND_ORIGINS")
+            .unwrap_or_else(|_| "http://127.0.0.1:3000,http://127.0.0.1:3001".to_string())
+            .split(',')
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .map(str::to_string)
+            .collect::<Vec<String>>();
         let database_url = env::var("DATABASE_URL")?;
         let jwt_expires_in_minutes = env::var("JWT_EXPIRES_IN_MINUTES")?
             .parse::<u64>()
@@ -35,6 +43,7 @@ impl Config {
         Ok(Self {
             app_name,
             database_url,
+            frontend_origins,
             host,
             jwt_expires_in_minutes,
             jwt_secret,

@@ -1,8 +1,9 @@
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     Json,
 };
+use serde::Deserialize;
 
 use crate::{
     app::state::AppState,
@@ -14,12 +15,18 @@ use crate::{
     services::{page_service, rsvp_service},
 };
 
+#[derive(Debug, Deserialize)]
+pub struct PublicPageQuery {
+    pub invite_token: Option<String>,
+}
+
 #[utoipa::path(
     get,
     path = "/api/public/{slug}",
     tag = "Public",
     params(
-        ("slug" = String, Path, description = "Published event slug")
+        ("slug" = String, Path, description = "Published event slug"),
+        ("invite_token" = Option<String>, Query, description = "Guest invite token for personalization")
     ),
     responses(
         (status = 200, description = "Published event page", body = PublicEventPageResponse),
@@ -30,10 +37,12 @@ use crate::{
 pub async fn get_public_event_page(
     State(state): State<AppState>,
     Path(slug): Path<String>,
+    Query(query): Query<PublicPageQuery>,
 ) -> Result<Json<PublicEventPageResponse>, AppError> {
-    let page = page_service::get_public_page_by_slug(&state.pool, &slug)
-        .await?
-        .ok_or_else(|| AppError::not_found("event not found"))?;
+    let page =
+        page_service::get_public_page_by_slug(&state.pool, &slug, query.invite_token.as_deref())
+            .await?
+            .ok_or_else(|| AppError::not_found("event not found"))?;
 
     Ok(Json(page))
 }

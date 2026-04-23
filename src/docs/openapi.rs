@@ -33,7 +33,10 @@ use crate::{
         CreatePageSectionRequest, PageSectionListResponse, PageSectionResponse,
         ReorderPageSectionsRequest, UpdatePageSectionRequest,
     },
-    dto::public::{PublicEventPageResponse, PublicPageSectionResponse},
+    dto::public::{
+        PublicEventPageResponse, PublicGuestContextResponse, PublicPageSectionResponse,
+        PublicRsvpFormResponse, PublicRsvpQuestionResponse,
+    },
     dto::rsvp::{
         PublicSubmitRsvpRequest, PublicSubmitRsvpResponse, RsvpFormResponse, RsvpQuestionInput,
         RsvpQuestionResponse, RsvpResponseItem, RsvpResponsesAggregates, RsvpResponsesListResponse,
@@ -96,7 +99,10 @@ use crate::{
             PageSectionResponse,
             ReorderPageSectionsRequest,
             PublicEventPageResponse,
+            PublicGuestContextResponse,
             PublicPageSectionResponse,
+            PublicRsvpFormResponse,
+            PublicRsvpQuestionResponse,
             PublicSubmitRsvpRequest,
             PublicSubmitRsvpResponse,
             RegisterRequest,

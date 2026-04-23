@@ -1,8 +1,15 @@
 use axum::{
+    http::{
+        header::{AUTHORIZATION, CONTENT_TYPE},
+        HeaderValue, Method,
+    },
     routing::{get, post},
     Router,
 };
-use tower_http::trace::TraceLayer;
+use tower_http::{
+    cors::{AllowOrigin, CorsLayer},
+    trace::TraceLayer,
+};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -13,6 +20,7 @@ use crate::{
 };
 
 pub fn build_router(state: AppState) -> Router {
+    let cors_layer = build_cors_layer(&state);
     let swagger_router = SwaggerUi::new("/api/docs").url("/api/openapi.json", ApiDoc::openapi());
 
     Router::new()
@@ -75,6 +83,27 @@ pub fn build_router(state: AppState) -> Router {
         .route("/api/public/:slug", get(public::get_public_event_page))
         .route("/api/public/:slug/rsvp", post(public::submit_public_rsvp))
         .route("/api/health", get(health::health))
+        .layer(cors_layer)
         .layer(TraceLayer::new_for_http())
         .with_state(state)
+}
+
+fn build_cors_layer(state: &AppState) -> CorsLayer {
+    let allowed_origins = state
+        .frontend_origins
+        .iter()
+        .filter_map(|origin| HeaderValue::from_str(origin).ok())
+        .collect::<Vec<HeaderValue>>();
+
+    CorsLayer::new()
+        .allow_origin(AllowOrigin::list(allowed_origins))
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::PATCH,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([AUTHORIZATION, CONTENT_TYPE])
 }

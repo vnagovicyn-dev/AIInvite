@@ -16,7 +16,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pool::run_migrations(&pool).await?;
     let jwt_settings = JwtSettings::new(config.jwt_secret.clone(), config.jwt_expires_in_minutes);
 
-    let state = AppState::new(config.app_name.clone(), pool, jwt_settings);
+    let state = AppState::with_frontend_origins(
+        config.app_name.clone(),
+        config.frontend_origins.clone(),
+        pool,
+        jwt_settings,
+    );
     let app = build_router(state);
 
     let listener = tokio::net::TcpListener::bind(address.as_str()).await?;

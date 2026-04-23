@@ -5,6 +5,7 @@ use crate::{domain::guests::Guest, dto::guests::GuestListQuery};
 
 pub struct NewGuest {
     pub event_id: Uuid,
+    pub invite_token: String,
     pub full_name: String,
     pub phone: Option<String>,
     pub email: Option<String>,
@@ -34,6 +35,7 @@ pub async fn create(pool: &PgPool, new_guest: &NewGuest) -> Result<Guest, sqlx::
         INSERT INTO guests (
             id,
             event_id,
+            invite_token,
             full_name,
             phone,
             email,
@@ -44,10 +46,11 @@ pub async fn create(pool: &PgPool, new_guest: &NewGuest) -> Result<Guest, sqlx::
             vip,
             notes
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING
             id,
             event_id,
+            invite_token,
             full_name,
             phone,
             email,
@@ -62,6 +65,7 @@ pub async fn create(pool: &PgPool, new_guest: &NewGuest) -> Result<Guest, sqlx::
     )
     .bind(Uuid::new_v4())
     .bind(new_guest.event_id)
+    .bind(&new_guest.invite_token)
     .bind(&new_guest.full_name)
     .bind(&new_guest.phone)
     .bind(&new_guest.email)
@@ -85,6 +89,7 @@ pub async fn list_by_event(
         SELECT
             id,
             event_id,
+            invite_token,
             full_name,
             phone,
             email,
@@ -146,6 +151,7 @@ pub async fn find_by_id_for_owner(
         SELECT
             g.id,
             g.event_id,
+            g.invite_token,
             g.full_name,
             g.phone,
             g.email,
@@ -180,6 +186,7 @@ pub async fn find_by_id_and_event(
         SELECT
             id,
             event_id,
+            invite_token,
             full_name,
             phone,
             email,
@@ -197,6 +204,38 @@ pub async fn find_by_id_and_event(
     )
     .bind(guest_id)
     .bind(event_id)
+    .fetch_optional(pool)
+    .await
+}
+
+pub async fn find_by_event_and_invite_token(
+    pool: &PgPool,
+    event_id: Uuid,
+    invite_token: &str,
+) -> Result<Option<Guest>, sqlx::Error> {
+    sqlx::query_as::<_, Guest>(
+        r#"
+        SELECT
+            id,
+            event_id,
+            invite_token,
+            full_name,
+            phone,
+            email,
+            group_name,
+            tags,
+            plus_one_allowed,
+            is_child,
+            vip,
+            notes,
+            created_at
+        FROM guests
+        WHERE event_id = $1
+          AND invite_token = $2
+        "#,
+    )
+    .bind(event_id)
+    .bind(invite_token.trim())
     .fetch_optional(pool)
     .await
 }
@@ -229,6 +268,7 @@ pub async fn update_for_owner(
         RETURNING
             g.id,
             g.event_id,
+            g.invite_token,
             g.full_name,
             g.phone,
             g.email,

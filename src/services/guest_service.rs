@@ -4,7 +4,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
-    common::error::AppError,
+    common::{error::AppError, slug},
     dto::{
         events::PatchValue,
         guests::{
@@ -173,6 +173,7 @@ pub async fn import_csv(
 
         let guest = guests_repo::NewGuest {
             event_id,
+            invite_token: generate_invite_token(),
             full_name,
             phone,
             email,
@@ -218,6 +219,7 @@ fn normalize_create_request(
 
     Ok(guests_repo::NewGuest {
         event_id,
+        invite_token: generate_invite_token(),
         full_name,
         phone: normalize_optional_string(payload.phone),
         email,
@@ -357,4 +359,8 @@ fn parse_csv_bool(value: &str) -> Result<bool, &'static str> {
         "true" | "1" | "yes" => Ok(true),
         _ => Err("vip must be one of: true,false,1,0,yes,no"),
     }
+}
+
+fn generate_invite_token() -> String {
+    slug::generate_slug("guest").replace('-', "")
 }

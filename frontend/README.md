@@ -19,7 +19,10 @@ npm run dev
 
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8080
+API_BASE_URL_INTERNAL=http://127.0.0.1:8080
 ```
+
+`NEXT_PUBLIC_API_BASE_URL` используется в браузере, а `API_BASE_URL_INTERNAL` нужен для server-side render в Next.js. В production его лучше направлять на внутренний backend address, например `http://127.0.0.1:8080`.
 
 ## Что уже есть
 

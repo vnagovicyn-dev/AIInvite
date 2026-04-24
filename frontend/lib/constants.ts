@@ -1,6 +1,8 @@
 export const APP_NAME = "AIInvite";
-export const API_BASE_URL =
+export const PUBLIC_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8080";
+export const INTERNAL_API_BASE_URL =
+  process.env.API_BASE_URL_INTERNAL ?? PUBLIC_API_BASE_URL;
 
 export const EVENT_TYPE_OPTIONS = [
   "wedding",

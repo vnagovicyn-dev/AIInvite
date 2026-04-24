@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/lib/constants";
+import { INTERNAL_API_BASE_URL, PUBLIC_API_BASE_URL } from "@/lib/constants";
 import { authStorage } from "@/lib/storage";
 import type { ApiErrorPayload } from "@/lib/types";
 
@@ -16,6 +16,10 @@ export class ApiClientError extends Error {
   }
 }
 
+function getApiBaseUrl(): string {
+  return typeof window === "undefined" ? INTERNAL_API_BASE_URL : PUBLIC_API_BASE_URL;
+}
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers = new Headers(options.headers);
 
@@ -30,7 +34,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     }
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await fetch(`${getApiBaseUrl()}${path}`, {
     ...options,
     headers,
     cache: "no-store"

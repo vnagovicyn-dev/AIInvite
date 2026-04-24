@@ -43,9 +43,9 @@ export function FeatureGrid() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {features.map(({ title, description, icon: Icon }) => (
-          <Card key={title} className="h-full border-white/70 bg-white/88">
+          <Card key={title} className="homepage-surface h-full border">
             <CardHeader>
-              <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
+              <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-[rgba(99,102,241,0.12)] text-[var(--homepage-accent)]">
                 <Icon className="size-5" />
               </div>
               <CardTitle className="homepage-card-title">{title}</CardTitle>

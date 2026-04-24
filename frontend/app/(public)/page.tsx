@@ -43,7 +43,7 @@ export default async function HomePage() {
             <Link
               key={item.title}
               href={item.href}
-              className="group rounded-[1.5rem] border border-white/75 bg-white/88 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-accent/60 hover:bg-white"
+              className="homepage-surface group rounded-[1.5rem] border p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-[rgba(99,102,241,0.4)] hover:bg-white"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -68,9 +68,9 @@ export default async function HomePage() {
         </div>
         <div className="grid gap-4 lg:grid-cols-3">
           {steps.map((step, index) => (
-            <Card key={step.title} className="border-white/75 bg-white/92">
+            <Card key={step.title} className="homepage-surface h-full border">
               <CardHeader className="space-y-4">
-                <div className="inline-flex size-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
+                <div className="inline-flex size-11 items-center justify-center rounded-2xl bg-[rgba(99,102,241,0.14)] text-[var(--homepage-accent)]">
                   <span className="text-lg font-semibold">{index + 1}</span>
                 </div>
                 <CardTitle className="homepage-card-title text-[1.2rem]">{step.title}</CardTitle>
@@ -85,7 +85,7 @@ export default async function HomePage() {
 
       <FeatureGrid />
 
-      <section className="space-y-6" id="templates">
+      <section className="homepage-surface-lilac space-y-6 rounded-[2rem] border px-6 py-7 sm:px-8 sm:py-8" id="templates">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
             <p className="homepage-section-kicker">
@@ -98,7 +98,7 @@ export default async function HomePage() {
               Начните с готового стиля и адаптируйте его под свой формат события.
             </p>
           </div>
-          <Button asChild variant="secondary" className="homepage-button-label">
+          <Button asChild variant="secondary" className="homepage-button-label homepage-secondary-button">
             <Link href="/templates">Смотреть все шаблоны</Link>
           </Button>
         </div>
@@ -106,7 +106,7 @@ export default async function HomePage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]" id="demo">
-        <Card className="overflow-hidden border-white/75 bg-white/94">
+        <Card className="homepage-surface-lilac overflow-hidden border">
           <CardHeader className="space-y-3">
             <div className="homepage-section-kicker">
               Демо
@@ -119,7 +119,7 @@ export default async function HomePage() {
             </p>
           </CardHeader>
           <CardContent className="grid gap-4" id="demo-preview">
-            <div className="rounded-[1.8rem] border border-border/70 bg-gradient-to-br from-white via-secondary/45 to-accent/30 p-6">
+            <div className="rounded-[1.8rem] border border-[rgba(99,102,241,0.14)] bg-white p-6">
               <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 Страница приглашения
               </div>
@@ -152,10 +152,10 @@ export default async function HomePage() {
           </CardContent>
         </Card>
 
-        <Card className="border-accent/40 bg-gradient-to-br from-white via-white to-accent/25">
+        <Card className="homepage-surface-warm border">
           <CardContent className="flex h-full flex-col justify-between gap-6 px-6 py-6">
             <div className="space-y-4">
-              <div className="inline-flex rounded-full bg-white/85 px-4 py-1 text-[15px] font-semibold text-foreground">
+              <div className="homepage-warm-chip inline-flex rounded-full px-4 py-1 text-[15px] font-semibold">
                 Пример пользовательского сценария
               </div>
               <div className="space-y-3">
@@ -169,10 +169,10 @@ export default async function HomePage() {
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button asChild className="homepage-button-label">
+              <Button asChild className="homepage-button-label homepage-primary-button">
                 <Link href="#demo-preview">Открыть демо</Link>
               </Button>
-              <Button asChild variant="secondary" className="homepage-button-label">
+              <Button asChild variant="secondary" className="homepage-button-label homepage-secondary-button">
                 <Link href="/templates">Посмотреть шаблоны</Link>
               </Button>
             </div>
@@ -191,9 +191,9 @@ export default async function HomePage() {
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {trustItems.map((item) => (
-            <Card key={item.title} className="h-full border-white/75 bg-white/92">
+            <Card key={item.title} className="homepage-surface h-full border">
               <CardHeader>
-                <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-secondary text-foreground">
+                <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-[var(--homepage-soft-warm)] text-[#c86f4e]">
                   <item.icon className="size-5" />
                 </div>
                 <CardTitle className="homepage-card-title">{item.title}</CardTitle>
@@ -217,7 +217,7 @@ export default async function HomePage() {
           {faqItems.map((item) => (
             <details
               key={item.question}
-              className="group rounded-[1.5rem] border border-white/75 bg-white/92 px-5 py-5 shadow-soft"
+              className="homepage-surface group rounded-[1.5rem] border px-5 py-5 shadow-soft"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.05rem] font-semibold leading-7 text-foreground">
                 {item.question}
@@ -232,10 +232,10 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <Card className="overflow-hidden border-accent/45 bg-gradient-to-br from-white via-white to-accent/30">
+        <Card className="homepage-surface-lilac overflow-hidden border">
           <CardContent className="flex flex-col gap-6 px-6 py-10 text-center sm:px-10">
             <div className="space-y-3">
-              <div className="inline-flex self-center rounded-full bg-white/85 px-4 py-1 text-[15px] font-semibold text-foreground">
+              <div className="homepage-warm-chip inline-flex self-center rounded-full px-4 py-1 text-[15px] font-semibold">
                 Готовы попробовать?
               </div>
               <h2 className="font-[family-name:var(--font-heading)] text-[2.6rem] font-bold leading-[1.08] tracking-[-0.035em] sm:text-[3rem]">
@@ -247,10 +247,10 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg" className="homepage-button-label">
+              <Button asChild size="lg" className="homepage-button-label homepage-primary-button">
                 <Link href="/register">Создать приглашение</Link>
               </Button>
-              <Button asChild variant="secondary" size="lg" className="homepage-button-label">
+              <Button asChild variant="secondary" size="lg" className="homepage-button-label homepage-secondary-button">
                 <Link href="/templates">Посмотреть шаблоны</Link>
               </Button>
             </div>
@@ -365,8 +365,8 @@ function DemoLine({
   text: string;
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-[1.3rem] bg-white/85 px-4 py-3">
-      <div className="mt-0.5 inline-flex size-9 items-center justify-center rounded-2xl bg-secondary text-foreground">
+    <div className="flex items-start gap-3 rounded-[1.3rem] bg-[var(--homepage-soft-lilac)] px-4 py-3">
+      <div className="mt-0.5 inline-flex size-9 items-center justify-center rounded-2xl bg-[rgba(99,102,241,0.12)] text-[var(--homepage-accent)]">
         <Icon className="size-4" />
       </div>
       <div>

@@ -10,12 +10,13 @@ export function LandingHero({
   templatesCount: number;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-[2.3rem] border border-white/70 bg-white/92 px-8 py-9 shadow-soft backdrop-blur sm:px-12 sm:py-12 lg:px-14 lg:py-14">
-      <div className="absolute inset-0 bg-hero-grid bg-[size:28px_28px] opacity-35" />
-      <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-accent/35 blur-3xl" />
+    <section className="homepage-surface relative overflow-hidden rounded-[2.3rem] border px-8 py-9 shadow-soft sm:px-12 sm:py-12 lg:px-14 lg:py-14">
+      <div className="absolute inset-0 bg-hero-grid bg-[size:28px_28px] opacity-[0.12]" />
+      <div className="absolute right-12 top-10 h-32 w-32 rounded-full bg-[rgba(99,102,241,0.12)] blur-3xl" />
+      <div className="absolute bottom-6 left-10 h-24 w-24 rounded-full bg-[rgba(242,154,122,0.12)] blur-3xl" />
       <div className="relative grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
         <div className="space-y-7">
-          <p className="inline-flex rounded-full bg-secondary px-4 py-1.5 text-[13px] font-semibold text-secondary-foreground">
+          <p className="homepage-warm-chip inline-flex rounded-full px-4 py-1.5 text-[13px] font-semibold">
             Онлайн-приглашение, гости и ответы в одном месте
           </p>
           <div className="space-y-5">
@@ -28,13 +29,13 @@ export function LandingHero({
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="homepage-button-label">
+            <Button asChild size="lg" className="homepage-button-label homepage-primary-button">
               <Link href="/register">
                 Создать приглашение
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button asChild variant="secondary" size="lg" className="homepage-button-label">
+            <Button asChild variant="secondary" size="lg" className="homepage-button-label homepage-secondary-button">
               <Link href="/templates">Посмотреть шаблоны</Link>
             </Button>
           </div>
@@ -47,8 +48,8 @@ export function LandingHero({
           </div>
         </div>
 
-        <Card className="overflow-hidden border-white/80 bg-card/95">
-          <CardHeader className="space-y-3 border-b border-border/60 bg-white/70">
+        <Card className="homepage-surface-lilac overflow-hidden border">
+          <CardHeader className="space-y-3 border-b border-[rgba(99,102,241,0.14)] bg-white/72">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -56,7 +57,7 @@ export function LandingHero({
                 </div>
                 <CardTitle className="mt-2">Организатор видит всё в одном кабинете</CardTitle>
               </div>
-              <div className="rounded-full bg-accent px-3 py-1.5 text-[12px] font-semibold text-accent-foreground">
+              <div className="rounded-full bg-[rgba(99,102,241,0.14)] px-3 py-1.5 text-[12px] font-semibold text-[var(--homepage-accent)]">
                 {templatesCount}+ шаблонов
               </div>
             </div>
@@ -75,21 +76,21 @@ export function LandingHero({
               />
             </div>
 
-            <div className="rounded-[1.6rem] border border-border/70 bg-secondary/35 p-4">
+            <div className="rounded-[1.6rem] border border-[rgba(99,102,241,0.14)] bg-white/72 p-4">
               <div className="mb-3 flex items-center justify-between">
                 <div className="text-sm font-semibold text-foreground">Ответы гостей</div>
-                <div className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-muted-foreground">
+                <div className="rounded-full bg-[rgba(242,154,122,0.12)] px-3 py-1 text-xs font-semibold text-[#c86f4e]">
                   Обновляется автоматически
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
-                <ResponseStat label="Подтвердили" value="24" tone="bg-accent/60" />
-                <ResponseStat label="Пока думают" value="6" tone="bg-secondary/90" />
-                <ResponseStat label="Не смогут" value="3" tone="bg-white/90" />
+                <ResponseStat label="Подтвердили" value="24" tone="bg-[rgba(99,102,241,0.12)]" />
+                <ResponseStat label="Пока думают" value="6" tone="bg-[var(--homepage-soft-lilac)]" />
+                <ResponseStat label="Не смогут" value="3" tone="bg-[var(--homepage-soft-warm)]" />
               </div>
             </div>
 
-            <div className="rounded-[1.6rem] border border-border/70 bg-white/88 p-4">
+            <div className="rounded-[1.6rem] border border-[var(--homepage-border)] bg-white p-4">
               <div className="mb-3 flex items-center gap-2 font-semibold text-foreground">
                 <ListChecks className="size-4 text-muted-foreground" />
                 Что видит организатор
@@ -119,7 +120,7 @@ export function LandingHero({
 
 function HeroChip({ label }: { label: string }) {
   return (
-    <div className="rounded-[1.25rem] border border-white/65 bg-white/72 px-4 py-4 text-[15px] font-semibold leading-6 text-foreground">
+    <div className="rounded-[1.25rem] border border-[rgba(242,154,122,0.22)] bg-[rgba(242,154,122,0.08)] px-4 py-4 text-[15px] font-semibold leading-6 text-[var(--homepage-text)]">
       {label}
     </div>
   );

@@ -4,38 +4,38 @@ import { Button } from "@/components/ui/button";
 
 export function PublicTopbar() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/70 bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-[var(--homepage-border)] bg-[rgba(252,251,248,0.9)] backdrop-blur">
       <div className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4">
-          <Link href="/" className="font-[family-name:var(--font-heading)] text-[1.8rem] font-extrabold tracking-[-0.04em]">
+          <Link href="/" className="font-[family-name:var(--font-heading)] text-[1.8rem] font-extrabold tracking-[-0.04em] text-[var(--homepage-text)]">
             AI Invite
           </Link>
-          <div className="hidden rounded-full border bg-white/72 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground xl:block">
+          <div className="homepage-warm-chip hidden rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] xl:block">
             Онлайн-приглашения
           </div>
         </div>
 
-        <nav className="hidden items-center gap-6 text-[15px] font-medium text-muted-foreground lg:flex">
-          <Link href="/">Главная</Link>
-          <Link href="/templates">Шаблоны</Link>
-          <Link href="/#how-it-works">Как это работает</Link>
-          <Link href="/#demo">Демо</Link>
+        <nav className="hidden items-center gap-6 text-[15px] font-medium lg:flex">
+          <Link href="/" className="homepage-link">Главная</Link>
+          <Link href="/templates" className="homepage-link">Шаблоны</Link>
+          <Link href="/#how-it-works" className="homepage-link">Как это работает</Link>
+          <Link href="/#demo" className="homepage-link">Демо</Link>
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
           <Button asChild variant="ghost">
-            <Link href="/login">Войти</Link>
+            <Link href="/login" className="homepage-link">Войти</Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="homepage-primary-button">
             <Link href="/register">Создать приглашение</Link>
           </Button>
         </div>
 
         <details className="relative lg:hidden">
-          <summary className="flex cursor-pointer list-none items-center rounded-full border bg-white/86 px-4 py-2 text-[15px] font-medium text-foreground">
+          <summary className="flex cursor-pointer list-none items-center rounded-full border border-[var(--homepage-border)] bg-white px-4 py-2 text-[15px] font-medium text-[var(--homepage-text)]">
             Меню
           </summary>
-          <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-72 rounded-[1.4rem] border border-white/80 bg-white/96 p-3 shadow-soft">
+          <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-72 rounded-[1.4rem] border border-[var(--homepage-border)] bg-white p-3 shadow-soft">
             <nav className="grid gap-1 text-[15px]">
               <MobileNavLink href="/">Главная</MobileNavLink>
               <MobileNavLink href="/templates">Шаблоны</MobileNavLink>
@@ -43,7 +43,7 @@ export function PublicTopbar() {
               <MobileNavLink href="/#demo">Демо</MobileNavLink>
               <MobileNavLink href="/login">Войти</MobileNavLink>
               <div className="pt-2">
-                <Button asChild className="w-full">
+                <Button asChild className="homepage-primary-button w-full">
                   <Link href="/register">Создать приглашение</Link>
                 </Button>
               </div>
@@ -65,7 +65,7 @@ function MobileNavLink({
   return (
     <Link
       href={href}
-      className="rounded-2xl px-3 py-2.5 text-[15px] font-medium text-foreground transition hover:bg-secondary/65"
+      className="rounded-2xl px-3 py-2.5 text-[15px] font-medium text-[var(--homepage-text)] transition hover:bg-[var(--homepage-soft-lilac)] hover:text-[var(--homepage-accent)]"
     >
       {children}
     </Link>

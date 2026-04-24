@@ -11,8 +11,8 @@ export function TemplateCard({ template }: { template: Template }) {
   const summary = getTemplateSummary(template.category);
 
   return (
-    <Card className="h-full overflow-hidden border-white/75 bg-white/92">
-      <div className="relative aspect-[4/3] border-b bg-gradient-to-br from-secondary via-background to-accent/25">
+    <Card className="homepage-surface h-full overflow-hidden border">
+      <div className="relative aspect-[4/3] border-b border-[var(--homepage-border)] bg-[var(--homepage-soft-lilac)]">
         {template.preview_url ? (
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -21,7 +21,7 @@ export function TemplateCard({ template }: { template: Template }) {
         ) : null}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10" />
         <div className="absolute left-4 top-4 flex gap-2">
-          <Badge variant="outline" className="bg-white/85">
+          <Badge variant="outline" className="border-[rgba(99,102,241,0.18)] bg-white/92 text-[var(--homepage-accent)]">
             {categoryLabel}
           </Badge>
         </div>
@@ -39,12 +39,12 @@ export function TemplateCard({ template }: { template: Template }) {
         </p>
       </CardHeader>
       <CardContent className="text-muted-foreground">
-        <div className="homepage-card-copy rounded-2xl bg-secondary/50 px-4 py-3">
+        <div className="homepage-card-copy rounded-2xl bg-[var(--homepage-soft-warm)] px-4 py-3">
           Подходит для событий, где важно быстро собрать красивую страницу и отправить её гостям.
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild className="homepage-button-label w-full justify-between">
+        <Button asChild className="homepage-button-label homepage-primary-button w-full justify-between">
           <Link href={`/templates/${template.id}`}>
             Выбрать шаблон
             <ArrowRight className="size-4" />

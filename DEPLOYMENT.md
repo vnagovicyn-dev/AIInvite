@@ -14,9 +14,12 @@ Compatibility note:
 - `/srv/aiinvite/current` points to the active release
 - Docker Compose runs:
   - Rust application
-  - Caddy
   - Redis
 - PostgreSQL runs directly on the server, outside Docker
+- Frontend runs separately from backend as a `systemd` service with `Next.js`
+- Nginx proxies:
+  - `/api/*` -> backend on `127.0.0.1:8080`
+  - `/` -> frontend on `127.0.0.1:3000`
 
 ## Production Files
 
@@ -24,6 +27,7 @@ Compatibility note:
 - Production Compose: `docker-compose.production.yml`
 - Deploy script: `scripts/deploy/remote-deploy.sh`
 - Server bootstrap script: `scripts/deploy/bootstrap-server.sh`
+- Frontend deploy script: `scripts/deploy/deploy-frontend-production.sh`
 - Caddy template: `deploy/Caddyfile.template`
 - Production env example: `deploy/.env.production.example`
 
@@ -74,3 +78,45 @@ And it configures:
 3. GitHub Actions uploads the new release to `/srv/aiinvite/releases/<sha>`
 4. The server rebuilds the Rust image and updates the stack via Docker Compose
 5. Old releases are pruned automatically, keeping the most recent ones
+
+## Current VPS Runtime
+
+Backend:
+
+- release root: `/srv/aiinvite/current`
+- health: `http://SERVER_IP/api/health`
+- restart:
+
+```bash
+cd /srv/aiinvite/current
+docker compose -f docker-compose.production.yml restart app
+```
+
+Frontend:
+
+- app root: `/home/ops/apps/aiinvite/frontend`
+- `systemd` service: `aiinvite-frontend`
+- runtime: `next start -- --hostname 0.0.0.0 --port 3000`
+
+Build and restart frontend on the server:
+
+```bash
+cd /home/ops/apps/aiinvite
+./scripts/deploy/deploy-frontend-production.sh
+```
+
+If the frontend must call backend internally during SSR, set:
+
+```bash
+export NEXT_PUBLIC_API_BASE_URL=http://YOUR_PUBLIC_HOST
+export API_BASE_URL_INTERNAL=http://127.0.0.1:8080
+```
+
+Useful checks:
+
+```bash
+sudo systemctl status aiinvite-frontend --no-pager
+curl -I http://127.0.0.1:3000/
+curl -I http://SERVER_IP/
+curl http://SERVER_IP/api/health
+```

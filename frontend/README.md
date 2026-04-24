@@ -24,6 +24,17 @@ API_BASE_URL_INTERNAL=http://127.0.0.1:8080
 
 `NEXT_PUBLIC_API_BASE_URL` используется в браузере, а `API_BASE_URL_INTERNAL` нужен для server-side render в Next.js. В production его лучше направлять на внутренний backend address, например `http://127.0.0.1:8080`.
 
+## Production note
+
+Для внешнего сервера удобно держать такие значения:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://YOUR_PUBLIC_HOST
+API_BASE_URL_INTERNAL=http://127.0.0.1:8080
+```
+
+Тогда браузер ходит в публичный backend URL, а server-side render в Next.js не зацикливается через внешний proxy и работает по внутреннему адресу.
+
 ## Что уже есть
 
 - route groups для public/private layouts

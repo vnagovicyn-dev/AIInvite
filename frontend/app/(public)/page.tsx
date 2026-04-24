@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { templatesApi } from "@/lib/api/templates";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const templates = await templatesApi.list("?page=1&per_page=6&is_active=true");
 

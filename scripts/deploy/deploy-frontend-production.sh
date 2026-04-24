@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${FRONTEND_DIR:=/home/ops/apps/aiinvite/frontend}"
+: "${FRONTEND_DIR:=/srv/aiinvite/current/frontend}"
 : "${SERVICE_NAME:=aiinvite-frontend}"
 : "${PORT:=3000}"
 : "${HOST:=0.0.0.0}"
 : "${NODE_ENV:=production}"
 : "${API_BASE_URL_INTERNAL:=http://127.0.0.1:8080}"
 : "${NEXT_PUBLIC_API_BASE_URL:=http://127.0.0.1:8080}"
+: "${SERVICE_USER:=$(id -un)}"
+
+run_sudo() {
+  if sudo -n true >/dev/null 2>&1; then
+    sudo -n "$@"
+  else
+    sudo "$@"
+  fi
+}
 
 if [[ ! -d "$FRONTEND_DIR" ]]; then
   echo "frontend directory not found: $FRONTEND_DIR" >&2
@@ -56,7 +65,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=$(id -un)
+User=${SERVICE_USER}
 WorkingDirectory=${FRONTEND_DIR}
 Environment=NODE_ENV=${NODE_ENV}
 ExecStart=/usr/bin/npm run start -- --hostname ${HOST} --port ${PORT}
@@ -67,9 +76,8 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
 
-sudo mv "/tmp/${SERVICE_NAME}.service" "/etc/systemd/system/${SERVICE_NAME}.service"
-sudo systemctl daemon-reload
-sudo systemctl enable --now "${SERVICE_NAME}"
-sudo systemctl restart "${SERVICE_NAME}"
-sudo systemctl --no-pager --full status "${SERVICE_NAME}" | sed -n '1,20p'
-
+run_sudo install -D -m 0644 "/tmp/${SERVICE_NAME}.service" "/etc/systemd/system/${SERVICE_NAME}.service"
+run_sudo systemctl daemon-reload
+run_sudo systemctl enable --now "${SERVICE_NAME}"
+run_sudo systemctl restart "${SERVICE_NAME}"
+run_sudo systemctl --no-pager --full status "${SERVICE_NAME}" | sed -n '1,20p'

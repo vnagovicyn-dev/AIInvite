@@ -49,6 +49,9 @@ Add these secrets in the private GitHub repository before the workflow can deplo
 - `CADDY_SITE_ADDRESS`
   - Domain example: `api.example.com`
   - IP-only fallback: `http://159.194.216.45`
+- `FRONTEND_PUBLIC_BASE_URL`
+  - Example: `https://aiinvite.ru`
+  - Used by Next.js in the browser, while SSR uses `http://127.0.0.1:8080` internally
 
 ## First-Time Server Bootstrap
 
@@ -66,6 +69,7 @@ And it configures:
 
 - deploy user for GitHub Actions
 - `/srv/aiinvite` release directories
+- passwordless `sudo` for the deploy user to install and restart the frontend `systemd` service
 - PostgreSQL database and role
 - PostgreSQL access for Docker containers on the host bridge
 - Docker subnet access in PostgreSQL and UFW via `172.16.0.0/12`
@@ -94,14 +98,18 @@ docker compose -f docker-compose.production.yml restart app
 
 Frontend:
 
-- app root: `/home/ops/apps/aiinvite/frontend`
+- app root: `/srv/aiinvite/current/frontend`
 - `systemd` service: `aiinvite-frontend`
 - runtime: `next start -- --hostname 0.0.0.0 --port 3000`
 
 Build and restart frontend on the server:
 
 ```bash
-cd /home/ops/apps/aiinvite
+cd /srv/aiinvite/current
+NEXT_PUBLIC_API_BASE_URL=https://YOUR_PUBLIC_HOST \
+API_BASE_URL_INTERNAL=http://127.0.0.1:8080 \
+FRONTEND_DIR=/srv/aiinvite/current/frontend \
+SERVICE_USER=deploy \
 ./scripts/deploy/deploy-frontend-production.sh
 ```
 

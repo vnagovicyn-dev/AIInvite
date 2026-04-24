@@ -77,3 +77,19 @@ jobs:
           ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "\
             chmod +x '$release_dir/scripts/deploy/remote-deploy.sh' && \
             PROJECT_NAME=aiinvite '$release_dir/scripts/deploy/remote-deploy.sh' '$release_dir' '/srv/aiinvite/current'"
+
+      - name: Deploy frontend on server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          FRONTEND_PUBLIC_BASE_URL: ${{ secrets.FRONTEND_PUBLIC_BASE_URL }}
+        run: |
+          DEPLOY_PORT=22
+          release_dir="/srv/aiinvite/releases/${GITHUB_SHA}"
+          ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "\
+            chmod +x '$release_dir/scripts/deploy/deploy-frontend-production.sh' && \
+            NEXT_PUBLIC_API_BASE_URL='${FRONTEND_PUBLIC_BASE_URL}' \
+            API_BASE_URL_INTERNAL='http://127.0.0.1:8080' \
+            FRONTEND_DIR='/srv/aiinvite/current/frontend' \
+            SERVICE_USER='${DEPLOY_USER}' \
+            '$release_dir/scripts/deploy/deploy-frontend-production.sh'"

@@ -33,6 +33,11 @@ grep -qxF "$DEPLOY_PUBLIC_KEY" "/home/$DEPLOY_USER/.ssh/authorized_keys" || prin
 install -d -m 755 -o "$DEPLOY_USER" -g "$DEPLOY_USER" "$DEPLOY_BASE"
 install -d -m 755 -o "$DEPLOY_USER" -g "$DEPLOY_USER" "$DEPLOY_BASE/releases"
 
+cat >/etc/sudoers.d/90-aiinvite-deploy <<EOF
+${DEPLOY_USER} ALL=(root) NOPASSWD: /usr/bin/install, /usr/bin/systemctl
+EOF
+chmod 440 /etc/sudoers.d/90-aiinvite-deploy
+
 sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
 DO \$\$
 BEGIN

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-heading: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  --font-body: "Aptos", "Segoe UI", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Manrope", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --background: 42 33% 97%;
   --foreground: 210 30% 15%;
   --card: 0 0% 100%;
@@ -39,6 +39,8 @@ body {
     radial-gradient(circle at 82% 12%, rgba(255, 236, 217, 0.92), transparent 18%),
     radial-gradient(circle at bottom right, rgba(183, 225, 205, 0.42), transparent 28%);
   min-height: 100vh;
+  line-height: 1.55;
+  font-feature-settings: "ss01" 1, "cv02" 1, "cv03" 1;
 }
 
 a {
@@ -47,4 +49,30 @@ a {
 
 ::selection {
   background: rgba(0, 129, 167, 0.14);
+}
+
+@layer components {
+  .homepage-section-kicker {
+    @apply text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground sm:text-xs;
+  }
+
+  .homepage-section-title {
+    @apply font-[family-name:var(--font-heading)] text-[2.2rem] font-bold leading-[1.1] tracking-[-0.03em] sm:text-[2.45rem];
+  }
+
+  .homepage-section-copy {
+    @apply max-w-2xl text-[1.02rem] leading-7 text-muted-foreground sm:text-[1.08rem];
+  }
+
+  .homepage-card-title {
+    @apply text-[1.08rem] font-semibold leading-6 tracking-[-0.02em] text-foreground;
+  }
+
+  .homepage-card-copy {
+    @apply text-[0.97rem] leading-7 text-muted-foreground;
+  }
+
+  .homepage-button-label {
+    @apply text-[15px] font-semibold;
+  }
 }

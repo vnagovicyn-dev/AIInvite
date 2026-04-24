@@ -17,12 +17,12 @@ export function TemplateDetailCta({
 
   return (
     <div className="flex flex-wrap gap-3">
-      <Button asChild size="lg">
+      <Button asChild size="lg" className="homepage-button-label">
         <Link href={href}>
           {hydrated && isAuthenticated ? "Использовать шаблон" : "Зарегистрироваться и использовать"}
         </Link>
       </Button>
-      <Button asChild variant="secondary" size="lg">
+      <Button asChild variant="secondary" size="lg" className="homepage-button-label">
         <Link href="/templates">Назад к каталогу</Link>
       </Button>
     </div>

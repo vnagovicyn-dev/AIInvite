@@ -13,8 +13,10 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
       <div className="mx-auto mb-5 inline-flex size-14 items-center justify-center rounded-3xl bg-secondary text-secondary-foreground">
         <Icon className="size-6" />
       </div>
-      <h3 className="text-xl font-semibold">{title}</h3>
-      <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground">{description}</p>
+      <h3 className="font-[family-name:var(--font-heading)] text-[1.55rem] font-bold leading-[1.15] tracking-[-0.025em]">
+        {title}
+      </h3>
+      <p className="mx-auto mt-3 max-w-xl text-[1rem] leading-7 text-muted-foreground">{description}</p>
       {action ? <div className="mt-6">{action}</div> : null}
     </div>
   );

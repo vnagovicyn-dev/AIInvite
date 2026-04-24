@@ -10,31 +10,31 @@ export function LandingHero({
   templatesCount: number;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-[2.3rem] border border-white/70 bg-white/92 p-8 shadow-soft backdrop-blur sm:p-12 lg:p-14">
+    <section className="relative overflow-hidden rounded-[2.3rem] border border-white/70 bg-white/92 px-8 py-9 shadow-soft backdrop-blur sm:px-12 sm:py-12 lg:px-14 lg:py-14">
       <div className="absolute inset-0 bg-hero-grid bg-[size:28px_28px] opacity-35" />
       <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-accent/35 blur-3xl" />
       <div className="relative grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-        <div className="space-y-6">
-          <p className="inline-flex rounded-full bg-secondary px-4 py-1 text-sm font-semibold text-secondary-foreground">
+        <div className="space-y-7">
+          <p className="inline-flex rounded-full bg-secondary px-4 py-1.5 text-[13px] font-semibold text-secondary-foreground">
             Онлайн-приглашение, гости и ответы в одном месте
           </p>
-          <div className="space-y-4">
-            <h1 className="max-w-3xl font-[family-name:var(--font-heading)] text-4xl leading-tight sm:text-5xl lg:text-6xl">
+          <div className="space-y-5">
+            <h1 className="max-w-4xl font-[family-name:var(--font-heading)] text-[3.45rem] font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-[3.8rem] lg:text-[4rem]">
               Создавайте стильные онлайн-приглашения и собирайте ответы гостей в одном сервисе
             </h1>
-            <p className="max-w-2xl text-lg text-muted-foreground">
+            <p className="max-w-2xl text-[1.14rem] font-medium leading-8 text-muted-foreground sm:text-[1.2rem]">
               AI Invite помогает быстро собрать страницу события, добавить гостей, включить
               подтверждение участия и опубликовать приглашение по ссылке.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="homepage-button-label">
               <Link href="/register">
                 Создать приглашение
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button asChild variant="secondary" size="lg">
+            <Button asChild variant="secondary" size="lg" className="homepage-button-label">
               <Link href="/templates">Посмотреть шаблоны</Link>
             </Button>
           </div>
@@ -56,12 +56,12 @@ export function LandingHero({
                 </div>
                 <CardTitle className="mt-2">Организатор видит всё в одном кабинете</CardTitle>
               </div>
-              <div className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+              <div className="rounded-full bg-accent px-3 py-1.5 text-[12px] font-semibold text-accent-foreground">
                 {templatesCount}+ шаблонов
               </div>
             </div>
           </CardHeader>
-          <CardContent className="grid gap-4 pt-6 text-sm text-muted-foreground">
+          <CardContent className="grid gap-4 pt-6 text-[15px] text-muted-foreground">
             <div className="grid gap-3 sm:grid-cols-2">
               <PreviewMetric
                 icon={CalendarCheck2}
@@ -119,7 +119,7 @@ export function LandingHero({
 
 function HeroChip({ label }: { label: string }) {
   return (
-    <div className="rounded-[1.25rem] border border-white/65 bg-white/72 px-4 py-4 text-sm font-semibold text-foreground">
+    <div className="rounded-[1.25rem] border border-white/65 bg-white/72 px-4 py-4 text-[15px] font-semibold leading-6 text-foreground">
       {label}
     </div>
   );
@@ -139,8 +139,8 @@ function PreviewMetric({
       <div className="mb-3 inline-flex size-10 items-center justify-center rounded-2xl bg-secondary text-foreground">
         <Icon className="size-4" />
       </div>
-      <div className="text-sm font-semibold text-foreground">{title}</div>
-      <div className="mt-1 text-sm leading-6 text-muted-foreground">{value}</div>
+      <div className="text-[15px] font-semibold text-foreground">{title}</div>
+      <div className="mt-1 text-[15px] leading-7 text-muted-foreground">{value}</div>
     </div>
   );
 }
@@ -156,10 +156,10 @@ function ResponseStat({
 }) {
   return (
     <div className={`rounded-[1.25rem] px-4 py-4 ${tone}`}>
-      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-2 text-2xl font-semibold text-foreground">{value}</div>
+      <div className="mt-2 text-[1.9rem] font-bold leading-none tracking-[-0.03em] text-foreground">{value}</div>
     </div>
   );
 }
@@ -181,9 +181,9 @@ function PreviewRow({
             <Icon className="size-4" />
           </div>
         ) : null}
-        <span className="font-medium text-foreground">{label}</span>
+        <span className="text-[15px] font-semibold text-foreground">{label}</span>
       </div>
-      <span className="max-w-[220px] text-right text-sm leading-6 text-muted-foreground">
+      <span className="max-w-[220px] text-right text-[15px] leading-7 text-muted-foreground">
         {value}
       </span>
     </div>

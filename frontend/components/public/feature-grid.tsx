@@ -32,12 +32,12 @@ const features = [
 
 export function FeatureGrid() {
   return (
-    <section className="space-y-5">
-      <div className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+    <section className="space-y-6">
+      <div className="space-y-3">
+        <p className="homepage-section-kicker">
           Возможности
         </p>
-        <h2 className="font-[family-name:var(--font-heading)] text-3xl">
+        <h2 className="homepage-section-title">
           Всё, что нужно для приглашения и гостей
         </h2>
       </div>
@@ -48,9 +48,9 @@ export function FeatureGrid() {
               <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
                 <Icon className="size-5" />
               </div>
-              <CardTitle>{title}</CardTitle>
+              <CardTitle className="homepage-card-title">{title}</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm leading-6 text-muted-foreground">{description}</CardContent>
+            <CardContent className="homepage-card-copy">{description}</CardContent>
           </Card>
         ))}
       </div>

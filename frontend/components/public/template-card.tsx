@@ -26,25 +26,25 @@ export function TemplateCard({ template }: { template: Template }) {
           </Badge>
         </div>
         <div className="absolute inset-x-4 bottom-4 rounded-[1.3rem] bg-white/86 px-4 py-3 backdrop-blur">
-          <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             Готовый стиль
           </div>
-          <div className="mt-1 text-sm font-medium text-foreground">{summary}</div>
+          <div className="mt-1 text-[15px] font-medium leading-6 text-foreground">{summary}</div>
         </div>
       </div>
       <CardHeader className="gap-3">
-        <CardTitle>{template.name}</CardTitle>
-        <p className="text-sm leading-6 text-muted-foreground">
+        <CardTitle className="homepage-card-title text-[1.18rem]">{template.name}</CardTitle>
+        <p className="homepage-card-copy">
           {summary}
         </p>
       </CardHeader>
-      <CardContent className="text-sm text-muted-foreground">
-        <div className="rounded-2xl bg-secondary/50 px-4 py-3">
+      <CardContent className="text-muted-foreground">
+        <div className="homepage-card-copy rounded-2xl bg-secondary/50 px-4 py-3">
           Подходит для событий, где важно быстро собрать красивую страницу и отправить её гостям.
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full justify-between">
+        <Button asChild className="homepage-button-label w-full justify-between">
           <Link href={`/templates/${template.id}`}>
             Выбрать шаблон
             <ArrowRight className="size-4" />

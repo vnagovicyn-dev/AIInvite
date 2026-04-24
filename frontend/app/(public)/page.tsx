@@ -4,14 +4,10 @@ import {
   CheckCircle2,
   ChevronRight,
   HeartHandshake,
-  LibraryBig,
   Link2,
-  PartyPopper,
   ShieldCheck,
   Smartphone,
-  Sparkles,
-  Users,
-  WandSparkles
+  Users
 } from "lucide-react";
 
 import { FeatureGrid } from "@/components/public/feature-grid";
@@ -27,18 +23,18 @@ export default async function HomePage() {
   const templates = await templatesApi.list("?page=1&per_page=6&is_active=true");
 
   return (
-    <div className="space-y-16 pb-10">
+    <div className="space-y-20 pb-12">
       <LandingHero templatesCount={templates.total} />
 
-      <section className="space-y-5" id="events">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+      <section className="space-y-6" id="events">
+        <div className="space-y-3">
+          <p className="homepage-section-kicker">
             Форматы событий
           </p>
-          <h2 className="font-[family-name:var(--font-heading)] text-3xl">
+          <h2 className="homepage-section-title">
             Подходит для самых важных событий
           </h2>
-          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+          <p className="homepage-section-copy">
             Выберите формат, который подходит именно вам, и начните с готовой основы.
           </p>
         </div>
@@ -51,8 +47,8 @@ export default async function HomePage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-lg font-semibold text-foreground">{item.title}</div>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                  <div className="homepage-card-title text-[1.15rem]">{item.title}</div>
+                  <p className="homepage-card-copy mt-2">{item.description}</p>
                 </div>
                 <ChevronRight className="mt-1 size-4 text-muted-foreground transition group-hover:text-foreground" />
               </div>
@@ -61,12 +57,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="space-y-5" id="how-it-works">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+      <section className="space-y-6" id="how-it-works">
+        <div className="space-y-3">
+          <p className="homepage-section-kicker">
             Как это работает
           </p>
-          <h2 className="font-[family-name:var(--font-heading)] text-3xl">
+          <h2 className="homepage-section-title">
             Создайте приглашение за 3 шага
           </h2>
         </div>
@@ -77,9 +73,9 @@ export default async function HomePage() {
                 <div className="inline-flex size-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
                   <span className="text-lg font-semibold">{index + 1}</span>
                 </div>
-                <CardTitle>{step.title}</CardTitle>
+                <CardTitle className="homepage-card-title text-[1.2rem]">{step.title}</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm leading-6 text-muted-foreground">
+              <CardContent className="homepage-card-copy">
                 {step.description}
               </CardContent>
             </Card>
@@ -89,20 +85,20 @@ export default async function HomePage() {
 
       <FeatureGrid />
 
-      <section className="space-y-5" id="templates">
+      <section className="space-y-6" id="templates">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          <div className="space-y-3">
+            <p className="homepage-section-kicker">
               Шаблоны
             </p>
-            <h2 className="font-[family-name:var(--font-heading)] text-3xl">
+            <h2 className="homepage-section-title">
               Выберите шаблон для своего события
             </h2>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+            <p className="homepage-section-copy">
               Начните с готового стиля и адаптируйте его под свой формат события.
             </p>
           </div>
-          <Button asChild variant="secondary">
+          <Button asChild variant="secondary" className="homepage-button-label">
             <Link href="/templates">Смотреть все шаблоны</Link>
           </Button>
         </div>
@@ -112,25 +108,25 @@ export default async function HomePage() {
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]" id="demo">
         <Card className="overflow-hidden border-white/75 bg-white/94">
           <CardHeader className="space-y-3">
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="homepage-section-kicker">
               Демо
             </div>
-            <CardTitle className="font-[family-name:var(--font-heading)] text-3xl">
+            <CardTitle className="homepage-section-title">
               Так выглядит готовая страница приглашения
             </CardTitle>
-            <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+            <p className="homepage-section-copy max-w-xl">
               Откройте демо и посмотрите, как гости увидят ваше приглашение.
             </p>
           </CardHeader>
           <CardContent className="grid gap-4" id="demo-preview">
             <div className="rounded-[1.8rem] border border-border/70 bg-gradient-to-br from-white via-secondary/45 to-accent/30 p-6">
-              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 Страница приглашения
               </div>
-              <div className="mt-3 font-[family-name:var(--font-heading)] text-3xl text-foreground">
+              <div className="mt-3 font-[family-name:var(--font-heading)] text-[2.5rem] font-bold leading-[1.08] tracking-[-0.035em] text-foreground">
                 Свадьба Анны и Игоря
               </div>
-              <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
+              <div className="mt-3 flex flex-wrap gap-2 text-[15px] text-muted-foreground">
                 <span className="rounded-full bg-white/85 px-3 py-1">20 августа 2026</span>
                 <span className="rounded-full bg-white/85 px-3 py-1">Амстердам</span>
                 <span className="rounded-full bg-white/85 px-3 py-1">Grand Hall</span>
@@ -159,24 +155,24 @@ export default async function HomePage() {
         <Card className="border-accent/40 bg-gradient-to-br from-white via-white to-accent/25">
           <CardContent className="flex h-full flex-col justify-between gap-6 px-6 py-6">
             <div className="space-y-4">
-              <div className="inline-flex rounded-full bg-white/85 px-4 py-1 text-sm font-semibold text-foreground">
+              <div className="inline-flex rounded-full bg-white/85 px-4 py-1 text-[15px] font-semibold text-foreground">
                 Пример пользовательского сценария
               </div>
               <div className="space-y-3">
-                <div className="text-2xl font-[family-name:var(--font-heading)]">
+                <div className="font-[family-name:var(--font-heading)] text-[2.1rem] font-bold leading-[1.1] tracking-[-0.03em]">
                   От выбора шаблона до готовой ссылки для гостей
                 </div>
-                <p className="text-sm leading-6 text-muted-foreground">
+                <p className="homepage-card-copy">
                   В демо-блоке мы показываем, как будет выглядеть опубликованное приглашение:
                   спокойная страница события, важные детали и понятное подтверждение участия.
                 </p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button asChild>
+              <Button asChild className="homepage-button-label">
                 <Link href="#demo-preview">Открыть демо</Link>
               </Button>
-              <Button asChild variant="secondary">
+              <Button asChild variant="secondary" className="homepage-button-label">
                 <Link href="/templates">Посмотреть шаблоны</Link>
               </Button>
             </div>
@@ -184,12 +180,12 @@ export default async function HomePage() {
         </Card>
       </section>
 
-      <section className="space-y-5">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+      <section className="space-y-6">
+        <div className="space-y-3">
+          <p className="homepage-section-kicker">
             Почему это удобно
           </p>
-          <h2 className="font-[family-name:var(--font-heading)] text-3xl">
+          <h2 className="homepage-section-title">
             Понятно организатору, удобно гостям
           </h2>
         </div>
@@ -200,9 +196,9 @@ export default async function HomePage() {
                 <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-secondary text-foreground">
                   <item.icon className="size-5" />
                 </div>
-                <CardTitle className="text-lg">{item.title}</CardTitle>
+                <CardTitle className="homepage-card-title">{item.title}</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm leading-6 text-muted-foreground">
+              <CardContent className="homepage-card-copy">
                 {item.description}
               </CardContent>
             </Card>
@@ -210,12 +206,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="space-y-5">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+      <section className="space-y-6">
+        <div className="space-y-3">
+          <p className="homepage-section-kicker">
             Частые вопросы
           </p>
-          <h2 className="font-[family-name:var(--font-heading)] text-3xl">Частые вопросы</h2>
+          <h2 className="homepage-section-title">Частые вопросы</h2>
         </div>
         <div className="grid gap-3">
           {faqItems.map((item) => (
@@ -223,11 +219,11 @@ export default async function HomePage() {
               key={item.question}
               className="group rounded-[1.5rem] border border-white/75 bg-white/92 px-5 py-5 shadow-soft"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-foreground">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.05rem] font-semibold leading-7 text-foreground">
                 {item.question}
                 <ChevronRight className="size-4 shrink-0 text-muted-foreground transition group-open:rotate-90" />
               </summary>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted-foreground">
+              <p className="homepage-card-copy mt-4 max-w-3xl">
                 {item.answer}
               </p>
             </details>
@@ -239,22 +235,22 @@ export default async function HomePage() {
         <Card className="overflow-hidden border-accent/45 bg-gradient-to-br from-white via-white to-accent/30">
           <CardContent className="flex flex-col gap-6 px-6 py-10 text-center sm:px-10">
             <div className="space-y-3">
-              <div className="inline-flex self-center rounded-full bg-white/85 px-4 py-1 text-sm font-semibold text-foreground">
+              <div className="inline-flex self-center rounded-full bg-white/85 px-4 py-1 text-[15px] font-semibold text-foreground">
                 Готовы попробовать?
               </div>
-              <h2 className="font-[family-name:var(--font-heading)] text-4xl leading-tight">
+              <h2 className="font-[family-name:var(--font-heading)] text-[2.6rem] font-bold leading-[1.08] tracking-[-0.035em] sm:text-[3rem]">
                 Создайте своё первое приглашение уже сегодня
               </h2>
-              <p className="mx-auto max-w-2xl text-sm leading-6 text-muted-foreground">
+              <p className="homepage-section-copy mx-auto">
                 Выберите шаблон, настройте страницу события и начните собирать ответы гостей в
                 одном сервисе.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="homepage-button-label">
                 <Link href="/register">Создать приглашение</Link>
               </Button>
-              <Button asChild variant="secondary" size="lg">
+              <Button asChild variant="secondary" size="lg" className="homepage-button-label">
                 <Link href="/templates">Посмотреть шаблоны</Link>
               </Button>
             </div>
@@ -374,8 +370,8 @@ function DemoLine({
         <Icon className="size-4" />
       </div>
       <div>
-        <div className="font-semibold text-foreground">{title}</div>
-        <p className="mt-1 text-sm leading-6 text-muted-foreground">{text}</p>
+        <div className="text-[15px] font-semibold text-foreground">{title}</div>
+        <p className="mt-1 text-[15px] leading-7 text-muted-foreground">{text}</p>
       </div>
     </div>
   );

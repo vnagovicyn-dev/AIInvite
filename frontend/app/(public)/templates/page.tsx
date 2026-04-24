@@ -25,17 +25,17 @@ export default async function TemplatesPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Catalog"
+        eyebrow="Каталог"
         title="Шаблоны"
-        description="Публичный каталог шаблонов с фильтрацией по категориям и переходом в detail view."
+        description="Выберите стиль для события, отфильтруйте каталог по категории и откройте подходящий шаблон."
       />
 
       <div className="rounded-[1.6rem] border border-white/75 bg-white/88 p-4">
-        <div className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           Категории
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button asChild variant={!category ? "default" : "secondary"} size="sm">
+          <Button asChild variant={!category ? "default" : "secondary"} size="sm" className="homepage-button-label">
             <Link href="/templates">Все</Link>
           </Button>
           {categories.map((item) => (
@@ -44,9 +44,10 @@ export default async function TemplatesPage({
               asChild
               variant={category === item.category ? "default" : "secondary"}
               size="sm"
+              className="homepage-button-label"
             >
               <Link href={`/templates?category=${encodeURIComponent(item.category)}`}>
-                {item.category}
+                {getCategoryLabel(item.category)}
               </Link>
             </Button>
           ))}
@@ -64,4 +65,16 @@ export default async function TemplatesPage({
       )}
     </div>
   );
+}
+
+function getCategoryLabel(category: string) {
+  const labels: Record<string, string> = {
+    wedding: "Свадьба",
+    birthday: "День рождения",
+    anniversary: "Юбилей",
+    baby: "Детский праздник",
+    corporate: "Корпоративное событие"
+  };
+
+  return labels[category] ?? "Другое событие";
 }

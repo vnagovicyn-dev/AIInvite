@@ -1,27 +1,32 @@
-import { CalendarHeart, LayoutTemplate, Mailbox, ShieldCheck } from "lucide-react";
+import { CalendarHeart, LayoutTemplate, Link2, Mailbox, Users } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
   {
-    title: "Шаблоны под разные события",
-    description: "Каталог с готовыми концепциями для свадеб, дней рождения, baby shower и corporate invite.",
+    title: "Страница события",
+    description: "Красивое приглашение с датой, местом, программой и важными деталями.",
     icon: LayoutTemplate
   },
   {
-    title: "Удобный кабинет организатора",
-    description: "События, секции, гости и статус публикации собраны в одном месте без лишних переключений.",
-    icon: CalendarHeart
+    title: "Список гостей",
+    description: "Храните гостей, группы и важные пометки в одном месте.",
+    icon: Users
   },
   {
-    title: "RSVP и список гостей",
-    description: "Публичная форма ответа и приватное управление гостями уже работают поверх одного backend flow.",
+    title: "Подтверждение участия",
+    description: "Собирайте ответы гостей без таблиц и переписок.",
     icon: Mailbox
   },
   {
-    title: "Архитектура под рост продукта",
-    description: "Каркас уже подготовлен под media, AI suggestions, seating и дальнейшие улучшения.",
-    icon: ShieldCheck
+    title: "Публикация по ссылке",
+    description: "Делитесь приглашением в мессенджерах и по почте.",
+    icon: Link2
+  },
+  {
+    title: "Готовые шаблоны",
+    description: "Начинайте не с пустого листа, а с готовой структуры.",
+    icon: CalendarHeart
   }
 ];
 
@@ -33,10 +38,10 @@ export function FeatureGrid() {
           Возможности
         </p>
         <h2 className="font-[family-name:var(--font-heading)] text-3xl">
-          Всё, что нужно для современного invite flow
+          Всё, что нужно для приглашения и гостей
         </h2>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {features.map(({ title, description, icon: Icon }) => (
           <Card key={title} className="h-full border-white/70 bg-white/88">
             <CardHeader>

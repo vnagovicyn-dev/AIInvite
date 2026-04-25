@@ -1,5 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CalendarCheck2, ListChecks, MapPinned, Users } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Clock3,
+  Users,
+  XCircle
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,22 +17,22 @@ export function LandingHero({
   templatesCount: number;
 }) {
   return (
-    <section className="homepage-surface relative overflow-hidden rounded-[2.3rem] border px-8 py-9 shadow-soft sm:px-12 sm:py-12 lg:px-14 lg:py-14">
+    <section className="homepage-surface relative overflow-hidden rounded-[2.5rem] border px-8 py-9 shadow-soft sm:px-12 sm:py-12 lg:px-14 lg:py-14">
       <div className="absolute inset-0 bg-hero-grid bg-[size:28px_28px] opacity-[0.12]" />
       <div className="absolute right-12 top-10 h-32 w-32 rounded-full bg-[rgba(99,102,241,0.12)] blur-3xl" />
       <div className="absolute bottom-6 left-10 h-24 w-24 rounded-full bg-[rgba(242,154,122,0.12)] blur-3xl" />
-      <div className="relative grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-        <div className="space-y-7">
+      <div className="relative grid gap-10 lg:grid-cols-[1.04fr_0.96fr] lg:items-center">
+        <div className="space-y-8">
           <p className="homepage-warm-chip inline-flex rounded-full px-4 py-1.5 text-[13px] font-semibold">
-            Онлайн-приглашение, гости и ответы в одном месте
+            Онлайн-приглашения для важных событий
           </p>
-          <div className="space-y-5">
-            <h1 className="max-w-4xl font-[family-name:var(--font-heading)] text-[3.45rem] font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-[3.8rem] lg:text-[4rem]">
-              Создавайте стильные онлайн-приглашения и собирайте ответы гостей в одном сервисе
+          <div className="max-w-[40rem] space-y-6">
+            <h1 className="max-w-[14ch] font-[family-name:var(--font-heading)] text-[2.15rem] font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-[2.75rem] lg:text-[3.3rem]">
+              Создайте красивое приглашение и собирайте ответы гостей в одном сервисе
             </h1>
-            <p className="max-w-2xl text-[1.14rem] font-medium leading-8 text-muted-foreground sm:text-[1.2rem]">
-              AI Invite помогает быстро собрать страницу события, добавить гостей, включить
-              подтверждение участия и опубликовать приглашение по ссылке.
+            <p className="max-w-[36rem] text-[1.04rem] font-medium leading-8 text-muted-foreground sm:text-[1.12rem] sm:leading-8">
+              Выберите шаблон, настройте страницу события, добавьте гостей и откройте
+              подтверждение участия по ссылке — без таблиц, переписок и лишней операционки.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -44,75 +51,98 @@ export function LandingHero({
             <HeroChip label="Выберите шаблон" />
             <HeroChip label="Настройте страницу события" />
             <HeroChip label="Добавьте гостей" />
-            <HeroChip label="Собирайте подтверждения участия" />
+            <HeroChip label="Получайте ответы гостей" />
           </div>
         </div>
 
-        <Card className="homepage-surface-lilac overflow-hidden border">
-          <CardHeader className="space-y-3 border-b border-[rgba(99,102,241,0.14)] bg-white/72">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  Пример рабочего пространства
-                </div>
-                <CardTitle className="mt-2">Организатор видит всё в одном кабинете</CardTitle>
-              </div>
-              <div className="rounded-full bg-[rgba(99,102,241,0.14)] px-3 py-1.5 text-[12px] font-semibold text-[var(--homepage-accent)]">
-                {templatesCount}+ шаблонов
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-4 pt-6 text-[15px] text-muted-foreground">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <PreviewMetric
-                icon={CalendarCheck2}
-                title="Страница события"
-                value="Дата, место, программа и детали для гостей"
-              />
-              <PreviewMetric
-                icon={Users}
-                title="Список гостей"
-                value="Группы, VIP-гости и важные пометки"
-              />
-            </div>
+        <div className="relative lg:pl-6">
+          <div className="pointer-events-none absolute -left-2 top-10 hidden h-24 w-24 rounded-full bg-[rgba(99,102,241,0.12)] blur-2xl lg:block" />
+          <div className="pointer-events-none absolute right-4 top-2 hidden h-20 w-20 rounded-full bg-[rgba(242,154,122,0.14)] blur-2xl lg:block" />
 
-            <div className="rounded-[1.6rem] border border-[rgba(99,102,241,0.14)] bg-white/72 p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="text-sm font-semibold text-foreground">Ответы гостей</div>
-                <div className="rounded-full bg-[rgba(242,154,122,0.12)] px-3 py-1 text-xs font-semibold text-[#c86f4e]">
-                  Обновляется автоматически
+          <Card className="homepage-surface relative overflow-hidden border shadow-[0_28px_70px_rgba(17,24,39,0.08)]">
+            <div className="relative aspect-[4/4.6] overflow-hidden sm:aspect-[4/4.2] lg:aspect-[4/4.45]">
+              <Image
+                src={HERO_IMAGE_SRC}
+                alt="Пример страницы онлайн-приглашения AI Invite"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 42vw"
+                className="object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(252,251,248,0.02)_0%,rgba(252,251,248,0.08)_30%,rgba(252,251,248,0.78)_100%)]" />
+              <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-4 sm:inset-x-5 sm:top-5">
+                <div className="rounded-full bg-white/92 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--homepage-accent)] shadow-[0_10px_30px_rgba(17,24,39,0.08)] ring-1 ring-white/80 backdrop-blur">
+                  Страница приглашения
+                </div>
+                <div className="hidden rounded-full bg-[rgba(255,255,255,0.92)] px-3 py-1.5 text-[12px] font-semibold text-muted-foreground shadow-[0_10px_20px_rgba(17,24,39,0.06)] ring-1 ring-white/80 sm:block">
+                  {templatesCount}+ готовых стилей
                 </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <ResponseStat label="Подтвердили" value="24" tone="bg-[rgba(99,102,241,0.12)]" />
-                <ResponseStat label="Пока думают" value="6" tone="bg-[var(--homepage-soft-lilac)]" />
-                <ResponseStat label="Не смогут" value="3" tone="bg-[var(--homepage-soft-warm)]" />
-              </div>
-            </div>
 
-            <div className="rounded-[1.6rem] border border-[var(--homepage-border)] bg-white p-4">
-              <div className="mb-3 flex items-center gap-2 font-semibold text-foreground">
-                <ListChecks className="size-4 text-muted-foreground" />
-                Что видит организатор
-              </div>
-              <div className="grid gap-3">
-                <PreviewRow
-                  label="Опубликовано"
-                  value="Ссылка готова для отправки гостям"
-                />
-                <PreviewRow
-                  label="Подтверждение участия"
-                  value="Форма уже подключена к приглашению"
-                />
-                <PreviewRow
-                  label="Место проведения"
-                  value="Grand Hall, Амстердам"
-                  icon={MapPinned}
-                />
+              <div className="absolute inset-x-4 bottom-4 rounded-[1.7rem] bg-white/88 p-4 shadow-[0_18px_44px_rgba(17,24,39,0.08)] ring-1 ring-white/75 backdrop-blur sm:inset-x-5 sm:bottom-5 sm:p-5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  Готовое приглашение
+                </div>
+                <CardTitle className="mt-2 text-[1.4rem] sm:text-[1.55rem]">
+                  Свадьба Анны и Игоря
+                </CardTitle>
+                <div className="mt-3 flex flex-wrap gap-2 text-[13px] text-muted-foreground">
+                  <span className="rounded-full bg-[var(--homepage-soft-lilac)] px-3 py-1.5">
+                    20 августа 2026
+                  </span>
+                  <span className="rounded-full bg-[var(--homepage-soft-warm)] px-3 py-1.5">
+                    Grand Hall, Амстердам
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-1.5 ring-1 ring-[var(--homepage-border)]">
+                    Подтверждение участия подключено
+                  </span>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </Card>
+
+          <Card className="homepage-surface-warm relative mt-4 overflow-hidden border shadow-[0_20px_44px_rgba(17,24,39,0.08)] lg:absolute lg:-right-5 lg:top-12 lg:mt-0 lg:w-[18.5rem]">
+            <CardHeader className="space-y-2 pb-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[15px] font-semibold text-foreground">Ответы гостей</div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3 pt-0">
+              <ResponseRow
+                icon={CheckCircle2}
+                label="Подтвердили"
+                value="24"
+                tone="bg-[rgba(99,102,241,0.12)] text-[var(--homepage-accent)]"
+              />
+              <ResponseRow
+                icon={Clock3}
+                label="Пока не ответили"
+                value="6"
+                tone="bg-white text-[#7c5d48]"
+              />
+              <ResponseRow
+                icon={XCircle}
+                label="Не смогут"
+                value="3"
+                tone="bg-[rgba(242,154,122,0.16)] text-[#c86f4e]"
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="homepage-surface relative mt-4 overflow-hidden border shadow-[0_18px_40px_rgba(17,24,39,0.06)] lg:absolute lg:-left-1 lg:bottom-8 lg:mt-0 lg:w-[15.5rem]">
+            <CardContent className="space-y-4 p-5">
+              <div className="flex items-center gap-2 text-[15px] font-semibold text-foreground">
+                <Users className="size-4 text-[var(--homepage-accent)]" />
+                Гости
+              </div>
+              <div className="space-y-3">
+                <AudienceRow label="Семья" value="12 гостей" />
+                <AudienceRow label="Друзья" value="18 гостей" />
+                <AudienceRow label="VIP" value="4 гостя" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </section>
   );
@@ -126,67 +156,40 @@ function HeroChip({ label }: { label: string }) {
   );
 }
 
-function PreviewMetric({
+function ResponseRow({
   icon: Icon,
-  title,
-  value
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-[1.5rem] border border-border/70 bg-white/90 p-4">
-      <div className="mb-3 inline-flex size-10 items-center justify-center rounded-2xl bg-secondary text-foreground">
-        <Icon className="size-4" />
-      </div>
-      <div className="text-[15px] font-semibold text-foreground">{title}</div>
-      <div className="mt-1 text-[15px] leading-7 text-muted-foreground">{value}</div>
-    </div>
-  );
-}
-
-function ResponseStat({
   label,
   value,
   tone
 }: {
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
   tone: string;
 }) {
   return (
-    <div className={`rounded-[1.25rem] px-4 py-4 ${tone}`}>
-      <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        {label}
+    <div className="flex items-center justify-between rounded-[1.2rem] bg-white/72 px-4 py-3">
+      <div className="flex items-center gap-3">
+        <div className={`inline-flex size-9 items-center justify-center rounded-2xl ${tone}`}>
+          <Icon className="size-4" />
+        </div>
+        <div>
+          <div className="text-[15px] font-semibold text-foreground">{label}</div>
+          <div className="mt-1 text-[13px] font-medium text-muted-foreground">{value} гостей</div>
+        </div>
       </div>
-      <div className="mt-2 text-[1.9rem] font-bold leading-none tracking-[-0.03em] text-foreground">{value}</div>
+      <div className="size-2.5 rounded-full bg-[rgba(99,102,241,0.45)]" />
     </div>
   );
 }
 
-function PreviewRow({
-  label,
-  value,
-  icon: Icon
-}: {
-  label: string;
-  value: string;
-  icon?: React.ComponentType<{ className?: string }>;
-}) {
+function AudienceRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-[1.25rem] bg-secondary/38 px-4 py-3">
-      <div className="flex items-center gap-3">
-        {Icon ? (
-          <div className="inline-flex size-8 items-center justify-center rounded-2xl bg-white text-foreground">
-            <Icon className="size-4" />
-          </div>
-        ) : null}
-        <span className="text-[15px] font-semibold text-foreground">{label}</span>
-      </div>
-      <span className="max-w-[220px] text-right text-[15px] leading-7 text-muted-foreground">
-        {value}
-      </span>
+    <div className="flex items-center justify-between rounded-[1.25rem] bg-[var(--homepage-soft-lilac)] px-4 py-3">
+      <span className="text-[15px] font-semibold text-foreground">{label}</span>
+      <span className="text-[14px] font-medium text-muted-foreground">{value}</span>
     </div>
   );
 }
+
+const HERO_IMAGE_SRC = "/images/home/hero-invite-platform-premium.webp.png";
